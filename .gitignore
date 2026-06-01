@@ -1,0 +1,136 @@
+# Node
+node_modules/
+npm-debug.log
+npm-error.log
+package-lock.json
+yarn-error.log
+yarn.lock
+
+# Composer
+vendor/
+composer.phar
+composer.lock
+
+# Environment (TRÈS IMPORTANT - ne jamais commit .env)
+.env
+.env.backup
+.env.production
+.env.local
+.env.*.local
+.env.example
+
+# Laravel specific
+storage/
+storage/*.key
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/testing/
+storage/framework/views/
+storage/logs/
+bootstrap/cache/
+*.sqlite
+*.sqlite-journal
+
+# PHPUnit
+.phpunit.result.cache
+.coverage
+coverage/
+tests/coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.phpstorm.meta.php
+._*
+
+# Logs
+*.log
+error_log
+storage/logs/*.log
+
+# Debug
+debug.log
+.xdebug.log
+
+# Laravel Debugbar
+debugbar/
+
+# Session files
+sessions/
+
+# Compiled assets
+public/css/
+public/js/
+public/mix-manifest.json
+public/hot
+public/hot*
+public/build/
+resources/css/app.css
+resources/js/app.js
+
+# ZIP files
+*.zip
+*.rar
+*.7z
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.cache
+
+# Unit test reports
+tests/reports/
+coverage.xml
+
+# Laravel Octane
+.laravel-octane/
+
+# Laravel Horizon
+horizon/
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Mobile specific
+mobile/node_modules/
+mobile/.expo/
+mobile/.expo-shared/
+mobile/.expo-web/
+mobile/dist/
+mobile/web-build/
+mobile/*.log
+mobile/.DS_Store
+mobile/.env
+mobile/.env.local
+mobile/.env.production
+mobile/android/
+mobile/ios/
+mobile/*.jks
+mobile/*.keystore
+mobile/*.p8
+mobile/*.p12
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+*.swp
+*.swo
+*~
