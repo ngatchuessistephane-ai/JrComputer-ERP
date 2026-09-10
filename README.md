@@ -17,7 +17,6 @@ ERP modulaire pour **JR Computer Sarl** (Douala, Cameroun) spécialisé dans la 
 - **Base de données** : MySQL 8
 - **Cache/Queue** : Redis + Predis
 - **Temps réel** : Laravel Reverb
-- **Mobile** : React Native (Expo)
 - **PDF** : DomPDF
 - **Excel** : Maatwebsite Excel
 
