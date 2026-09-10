@@ -88,6 +88,7 @@ class UserIndex extends Component
         $this->resetInput();
         $this->showForm = false;
         session()->flash('message', 'Utilisateur sauvegardé.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function delete($id)
@@ -96,8 +97,10 @@ class UserIndex extends Component
         if ($user && $user->id !== auth()->id()) {
             $user->delete();
             session()->flash('message', 'Utilisateur supprimé.');
+            $this->dispatch('scroll-to-top');
         } else {
             session()->flash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+            $this->dispatch('scroll-to-top');
         }
     }
 

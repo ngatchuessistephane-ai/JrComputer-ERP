@@ -4,537 +4,729 @@
     <meta charset="UTF-8">
     <title>Rapport Factures – JR Computer Sarl</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        /* ─── STYLES IDENTIQUES À PROFORMA-PDF ─── */
+        /* ✅ SUPPRESSION de l'import Google Fonts (bloquant pour DomPDF) */
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Plus Jakarta Sans', 'DejaVu Sans', sans-serif;
-            font-size: 10px;
-            color: #0d1f14;
-            background: #f9fbfa;
-        }
-
-        .top-bar {
-            height: 5px;
-            background: linear-gradient(90deg, #f07d00 0%, #f5a623 30%, #1a7a3c 60%, #0f5229 100%);
-        }
-
-        .header {
+            font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif;
             background: #ffffff;
-            padding: 22px 32px 18px;
-            border-bottom: 1px solid #e0ede5;
-            position: relative;
-            overflow: hidden;
+            color: #1a1a1a;
+            padding: 20px;
+            font-size: 11px;
         }
 
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            right: -40px;
-            width: 180px;
-            height: 180px;
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: #ffffff;
+        }
+
+        /* ─── EN-TÊTE / LETTERHEAD ─── */
+        .letterhead {
+            padding: 28px 40px 14px;
+            border-bottom: 1px solid #ccc;
+        }
+        .letterhead-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .letterhead-logo {
+            width: 78px;
+            height: 78px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(240,125,0,0.07) 0%, transparent 70%);
-        }
-
-        .header-inner { overflow: hidden; position: relative; z-index: 1; }
-        .logo-section { float: left; width: 50%; }
-        .meta-section { float: right; width: 46%; text-align: right; padding-top: 6px; }
-
-        .logo-img {
-            height: 50px;
-            width: auto;
-            display: block;
-        }
-
-        .doc-badge {
-            display: inline-block;
-            background: #0d1f14;
-            color: #ffffff;
-            font-size: 7px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 2px;
-            margin-bottom: 6px;
-        }
-
-        .doc-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0d1f14;
-            line-height: 1.15;
-            margin-bottom: 4px;
-        }
-
-        .doc-meta {
-            font-size: 8px;
-            color: #7a9185;
-        }
-
-        .doc-meta strong { color: #f07d00; font-weight: 700; }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, #1a7a3c 0%, #d4e8da 60%, transparent 100%);
-            margin: 0 32px;
-        }
-
-        .stats-section {
-            margin: 16px 32px 0;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            border: 1px solid #d4e8da;
-            border-radius: 10px;
-            background: #ffffff;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bbb;
             overflow: hidden;
         }
+        .letterhead-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .letterhead-logo .fallback { font-size: 24px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .letterhead-text { flex: 1; text-align: center; }
+        .letterhead-text .brand-tagline {
+            font-family: 'DejaVu Sans', 'Helvetica', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #8a8a8a;
+            letter-spacing: 0.3px;
+            font-style: italic;
+        }
+        .letterhead-text .brand-meta {
+            font-size: 9.5px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .letterhead-text .brand-meta strong { color: #444; font-weight: 600; }
 
-        .stat-item {
+        /* ─── ZONE DATE / TITRE ─── */
+        .meta-zone { padding: 18px 40px 0; }
+        .meta-title {
+            text-align: center;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #111;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            padding: 6px 14px 6px 4px;
+            background: #ececec;
+            display: inline-block;
+        }
+        .meta-period {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 12px;
+        }
+        .meta-date {
+            text-align: right;
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        /* ─── STATS ROW ─── */
+        .stats-row {
+            display: table;
+            width: calc(100% - 80px);
+            margin: 0 40px 16px;
+            border: 1px solid #222;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stats-row .stat {
             display: table-cell;
             text-align: center;
-            padding: 16px 10px;
+            padding: 8px 10px;
+            width: 20%;
+            border-right: 1px solid #222;
         }
-
-        .stat-item + .stat-item { border-left: 1px solid #e8f2eb; }
-
-        .stat-value {
-            font-size: 20px;
+        .stats-row .stat:last-child { border-right: none; }
+        .stats-row .stat-value {
+            font-size: 18px;
             font-weight: 800;
             color: #1a7a3c;
             display: block;
-            line-height: 1.1;
+            line-height: 1.2;
         }
-
-        .stat-value.warn { color: #f07d00; }
-
-        .stat-label {
-            font-size: 7px;
-            color: #7a9185;
+        .stats-row .stat-value.warn { color: #f07d00; }
+        .stats-row .stat-value.danger { color: #dc2626; }
+        .stats-row .stat-label {
+            font-size: 7.5px;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 0.8px;
             font-weight: 600;
-            margin-top: 3px;
-            display: block;
-        }
-
-        .section-title {
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #7a9185;
-            margin: 18px 32px 10px;
-        }
-
-        .invoice-card {
-            margin: 0 32px 20px;
-            background: #ffffff;
-            border: 1px solid #dceae1;
-            border-radius: 12px;
-            overflow: hidden;
-            page-break-inside: avoid;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        .card-header {
-            background: #0d1f14;
-            padding: 12px 18px;
-            overflow: hidden;
-        }
-
-        .card-header-left { float: left; }
-        .card-header-right { float: right; text-align: right; }
-
-        .invoice-ref {
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: block;
-        }
-
-        .invoice-date {
-            color: #6b8c77;
-            font-size: 8px;
             margin-top: 2px;
             display: block;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
+        /* ─── FILTRES ─── */
+        .filters-bar {
+            margin: 0 40px 14px;
+            border: 1px solid #ccc;
+            border-left: 3px solid #f07d00;
+            padding: 6px 12px;
+            font-size: 10px;
+            color: #555;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+            background: #f9f9f9;
+        }
+        .filters-bar .filter-tag {
+            background: #1a7a3c;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 7.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.3px;
         }
+        .filters-bar .filter-tag.orange { background: #f07d00; }
+        .filters-bar .filter-label { font-weight: 700; color: #1a1a1a; }
 
-        .status-paid      { background: #d1fae5; color: #065f46; }
-        .status-partial   { background: #ffedd5; color: #9a3412; }
-        .status-draft     { background: #f1f5f9; color: #475569; }
-        .status-sent      { background: #dbeafe; color: #1e40af; }
-        .status-overdue   { background: #fee2e2; color: #991b1b; }
-        .status-cancelled { background: #f1f5f9; color: #6b7280; }
-
-        .due-date-label {
-            color: #6b8c77;
-            font-size: 7.5px;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .card-meta {
-            background: #f4faf6;
-            padding: 10px 18px;
-            border-bottom: 1px solid #dceae1;
+        /* ─── BLOC FACTURE ─── */
+        .invoice-block {
+            margin: 0 40px 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             overflow: hidden;
+            page-break-inside: avoid;
         }
+        .invoice-header {
+            background: #0d1f14;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .invoice-header .ref {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .invoice-header .date {
+            color: #6b8c77;
+            font-size: 8px;
+        }
+        .invoice-header .right { text-align: right; }
 
-        .meta-pill {
-            float: left;
-            margin-right: 20px;
-            font-size: 8.5px;
+        .invoice-meta {
+            background: #f4faf6;
+            padding: 6px 16px;
+            border-bottom: 1px solid #dceae1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            font-size: 9px;
             color: #4a6155;
         }
+        .invoice-meta strong { color: #1a7a3c; }
 
-        .meta-pill strong { color: #1a7a3c; font-weight: 700; }
-
+        /* ─── TABLEAU FACTURE ─── */
+        .table-wrap {
+            margin: 0;
+            border: none;
+            padding: 0 4px;
+        }
         .items-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 10px;
         }
-
-        .items-table thead tr { background: #f0f8f3; }
-
-        .items-table th {
-            padding: 10px 16px;
+        .items-table thead th {
+            border: 1px solid #222;
+            border-top: none;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 10px;
             text-align: left;
-            font-size: 8px;
-            font-weight: 700;
-            color: #1a7a3c;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #dceae1;
+            background: #f5f5f5;
         }
+        .items-table thead th:first-child { border-left: none; }
+        .items-table thead th:last-child { border-right: none; }
+        .items-table thead th.center { text-align: center; }
+        .items-table thead th.right { text-align: right; }
 
-        .items-table th.right { text-align: right; }
-        .items-table th.center { text-align: center; }
-
-        .items-table td {
-            padding: 9px 16px;
-            border-bottom: 1px solid #edf5f0;
-            color: #0d1f14;
-            vertical-align: middle;
+        .items-table tbody td {
+            border: 1px solid #222;
+            border-top: none;
+            border-bottom: none;
+            padding: 8px 14px;
+            vertical-align: top;
+            color: #111;
         }
+        .items-table tbody td:first-child { border-left: none; }
+        .items-table tbody td:last-child { border-right: none; }
+        .items-table tbody tr:last-child td { padding-bottom: 12px; }
 
-        .items-table tbody tr:last-child td { border-bottom: none; }
-        .items-table tbody tr:nth-child(even) { background: #f9fdfb; }
-
-        .product-ref {
-            color: #7a9185;
-            font-size: 8px;
-            margin-left: 4px;
-        }
-
-        .service-item {
-            color: #f07d00;
-            font-size: 8px;
-            font-weight: 600;
-            margin-left: 4px;
-        }
-
-        .qty-cell {
+        .items-table .product-name { font-weight: 600; }
+        .items-table .product-ref { font-size: 9px; color: #666; }
+        .items-table .center { text-align: center; }
+        .items-table .right { text-align: right; }
+        .items-table .empty-row td {
+            color: #888;
             text-align: center;
-            font-weight: 700;
-            color: #1a7a3c;
+            padding: 20px 12px;
+            border-top: 1px solid #222;
         }
 
-        .price-cell { text-align: right; color: #4a6155; }
-
-        .total-cell {
-            text-align: right;
-            font-weight: 700;
-            color: #0d1f14;
-        }
-
-        .totals-section {
-            padding: 16px 20px;
+        /* ─── TOTAUX FACTURE (ALIGNÉS À DROITE) ─── */
+        .invoice-totals {
+            padding: 10px 16px 10px;
             background: #fafcfb;
             border-top: 2px solid #dceae1;
-            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
-        .totals-row {
+        .invoice-totals .total-line {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 24px;
-            font-size: 9px;
+            width: 100%;
+            padding: 3px 0;
+            border-bottom: 1px dashed #e0e8e3;
+        }
+
+        .invoice-totals .total-line:last-of-type {
+            border-bottom: none;
+        }
+
+        .invoice-totals .total-line .label {
             color: #4a6155;
-            margin-bottom: 6px;
-        }
-
-        .totals-row .t-label {
             font-weight: 500;
-        }
-
-        .totals-row .t-value {
-            font-weight: 600;
-            min-width: 110px;
+            font-size: 10px;
+            margin-right: 20px;
+            min-width: 100px;
             text-align: right;
         }
 
-        .totals-row.total-ttc {
-            font-size: 13px;
-            color: #0d1f14;
+        .invoice-totals .total-line .value {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 10px;
+            min-width: 140px;
+            text-align: right;
+            padding-right: 2px;
+        }
+
+        .invoice-totals .total-ttc-line {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            padding: 6px 0 2px;
+            border-top: 2.5px solid #1a7a3c;
+            margin-top: 4px;
+        }
+
+        .invoice-totals .total-ttc-line .label {
             font-weight: 800;
-            border-top: 2px solid #dceae1;
-            padding-top: 12px;
-            margin-top: 8px;
-            margin-bottom: 10px;
-        }
-
-        .totals-row.total-ttc .t-value {
             color: #1a7a3c;
-            font-size: 14px;
+            font-size: 11px;
+            margin-right: 20px;
+            min-width: 100px;
+            text-align: right;
         }
 
-        .totals-row.due {
-            background: #fff8f0;
-            border: 1px solid #fde8c0;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 9.5px;
+        .invoice-totals .total-ttc-line .value {
+            font-weight: 800;
+            color: #1a7a3c;
+            font-size: 13px;
+            min-width: 140px;
+            text-align: right;
+            padding-right: 2px;
+        }
+
+        /* ─── MONTANT EN LETTRES ─── */
+        .amount-in-words {
+            font-size: 8px;
+            color: #666;
+            padding: 4px 16px 2px;
+            text-align: right;
+            font-style: italic;
+            background: #fafcfb;
+        }
+        .amount-in-words strong {
+            color: #1a1a1a;
+            font-style: normal;
+        }
+
+        /* ─── PAIEMENTS ─── */
+        .payments-section {
+            padding: 0 16px 10px;
+            border-top: 1px solid #dceae1;
+            background: #fafcfb;
+        }
+        .payments-section .pay-title {
+            font-size: 8px;
             font-weight: 700;
-            color: #f07d00;
-            margin-top: 8px;
-            justify-content: space-between;
-            gap: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 8px 0 4px;
+            display: block;
         }
-
-        .totals-row.paid-full {
-            background: #f0fdf4;
-            border: 1px solid #d1fae5;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 9px;
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 8.5px;
+            color: #4a6155;
+            padding: 2px 0;
+            border-bottom: 1px dashed #e0e8e3;
+        }
+        .payment-item:last-child { border-bottom: none; }
+        .payment-amount {
             font-weight: 700;
-            color: #065f46;
-            margin-top: 8px;
-            justify-content: space-between;
-            gap: 10px;
+            color: #1a7a3c;
+        }
+        .payment-empty {
+            font-size: 8px;
+            color: #888;
+            padding: 2px 0;
+            font-style: italic;
         }
 
+        /* ─── STATUS BADGE ─── */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+        .status-paid      { background: #10b981; }
+        .status-partial   { background: #f59e0b; }
+        .status-draft     { background: #6b7280; }
+        .status-sent      { background: #3b82f6; }
+        .status-overdue   { background: #ef4444; }
+        .status-cancelled { background: #6b7280; }
+
+        /* ─── PIED DE PAGE ─── */
         .footer {
-            margin-top: 10px;
-            padding: 10px 32px;
+            margin-top: 22px;
+            border-top: 1px solid #ccc;
+            padding: 16px 40px 18px;
+        }
+        .footer-brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .footer-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid #bbb;
             overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .footer-divider {
-            height: 1px;
-            background: linear-gradient(90deg, #f07d00 0%, #1a7a3c 50%, transparent 100%);
-            margin-bottom: 10px;
-        }
-
-        .footer-left {
-            float: left;
-            color: #7a9185;
-            font-size: 7.5px;
-        }
-
-        .footer-left strong { color: #0d1f14; }
-
-        .footer-right {
-            float: right;
+        .footer-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .footer-logo .fallback { font-size: 16px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .footer-brand-text { font-size: 10px; line-height: 1.5; color: #333; text-align: center; }
+        .footer-brand-text .name { font-weight: 700; font-size: 11px; }
+        .footer-tagline {
+            text-align: center;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: 600;
             color: #f07d00;
-            font-size: 7.5px;
-            font-weight: 700;
+            margin: 12px 0 12px;
         }
-
-        .footer-bottom {
-            background: #0d1f14;
-            padding: 8px 32px;
-            overflow: hidden;
+        .partners-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
         }
+        .partners-row img {
+            height: 24px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.85;
+            filter: grayscale(15%);
+        }
+        .footer-legal { text-align: center; font-size: 8px; color: #999; margin-top: 10px; }
 
-        .fb-left { float: left; color: #4a6155; font-size: 7px; }
-        .fb-left strong { color: #a0c8ae; }
-        .fb-right { float: right; color: #f07d00; font-size: 7px; font-weight: 700; }
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+        .empty-state .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .empty-state .title { font-size: 12px; font-weight: 700; color: #1a1a1a; }
+        .empty-state .sub { font-size: 10px; color: #888; }
 
-        .clearfix::after { content: ''; display: table; clear: both; }
+        /* ─── PRINT ─── */
+        @media print {
+            body { background: #ffffff; padding: 10px; }
+            .invoice-block { page-break-inside: avoid; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-bar"></div>
+<div class="container">
 
-    <div class="header">
-        <div class="header-inner clearfix">
-            <div class="logo-section">
+    {{-- ============================================================
+         EN-TÊTE / LETTERHEAD
+    ============================================================ --}}
+    <div class="letterhead">
+        <div class="letterhead-row">
+            <div class="letterhead-logo">
                 @php
                     $logoPath = public_path('images/logo-jr.jpg');
                     $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
                 @endphp
                 @if($logoData)
-                    <img src="data:image/jpeg;base64,{{ $logoData }}" class="logo-img" alt="JR Computer">
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
                 @else
-                    <div style="font-size:22px;font-weight:800;color:#1a7a3c;">JR Computer</div>
-                    <div style="font-size:8px;color:#f07d00;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:3px;">Sarl · ERP System</div>
+                    <span class="fallback">JR</span>
                 @endif
             </div>
-            <div class="meta-section">
-                <div class="doc-badge">🧾 Rapport</div>
-                <div class="doc-title">Rapport des Factures</div>
-                <div class="doc-meta">Généré le <strong>{{ now()->format('d/m/Y à H:i') }}</strong></div>
+            <div class="letterhead-text">
+                <div class="brand-tagline">Ingénierie Informatique &amp; Télécommunications</div>
+                <div class="brand-meta">
+                    1390, Boulevard de la République, BP 5226 Douala &nbsp;/&nbsp; infos@jr-computer.net &nbsp;/&nbsp; www.jrcomputersarl.com<br>
+                    Régime : Réel &nbsp;-&nbsp; N° Cont : M020900027385T &nbsp;-&nbsp; R.C : 09/B.732 &nbsp;-&nbsp; CNPS : 351-0109022-N<br>
+                    Tél. : 2 33 42 21 53 / 6 99 96 96 08 / 6 99 00 38 38
+                </div>
             </div>
+            <div style="width:78px; flex-shrink:0;"></div>
         </div>
     </div>
 
-    <div class="divider"></div>
+    {{-- ============================================================
+         TITRE
+    ============================================================ --}}
+    <div class="meta-zone">
+        <div style="text-align: center;">
+            <span class="meta-title">LISTE DES FACTURES</span>
+        </div>
+        <div class="meta-period">Période : {{ $period_label ?? 'Toutes les factures' }}</div>
+        <div class="meta-date">Généré le {{ $generated_at ?? now()->format('d/m/Y à H:i') }}</div>
+    </div>
 
-    @if($invoices->count() > 2)
-    <div class="stats-section">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-value">{{ $invoices->count() }}</span>
-                <span class="stat-label">Factures</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value warn">{{ $invoices->where('status', 'sent')->count() }}</span>
-                <span class="stat-label">En attente</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value">{{ number_format($invoices->sum('total'), 0, ',', ' ') }}</span>
-                <span class="stat-label">Total TTC (FCFA)</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value">{{ number_format($invoices->sum('paid_amount'), 0, ',', ' ') }}</span>
-                <span class="stat-label">Règlements (FCFA)</span>
-            </div>
+    {{-- ============================================================
+         STATISTIQUES
+    ============================================================ --}}
+    @if($invoices->count() > 0)
+    @php
+        $stats = $stats ?? [
+            'total' => $invoices->count(),
+            'total_amount' => $invoices->sum('total'),
+            'paid_count' => $invoices->where('status', 'paid')->count(),
+            'overdue_count' => $invoices->where('status', 'overdue')->count(),
+            'total_paid' => $invoices->sum('paid_amount'),
+        ];
+    @endphp
+    <div class="stats-row">
+        <div class="stat">
+            <span class="stat-value">{{ $stats['total'] }}</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ number_format($stats['total_amount'], 0, ',', ' ') }}</span>
+            <span class="stat-label">Montant Total (FCFA)</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value warn">{{ $stats['paid_count'] }}</span>
+            <span class="stat-label">✅ Payées</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value danger">{{ $stats['overdue_count'] }}</span>
+            <span class="stat-label">⏰ En retard</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ number_format($stats['total_paid'], 0, ',', ' ') }}</span>
+            <span class="stat-label">Règlements (FCFA)</span>
         </div>
     </div>
     @endif
 
-    <div class="section-title">Détail des factures</div>
+    {{-- ============================================================
+         FILTRES
+    ============================================================ --}}
+    <div class="filters-bar">
+        <span class="filter-label">📋 Filtres :</span>
+        @if(!empty($filters['date_from']) || !empty($filters['date_to']))
+            <span class="filter-tag">📅 {{ $period_label ?? 'Période définie' }}</span>
+        @endif
+        @if(!empty($filters['status']))
+            @php
+                $statusMap = ['draft'=>'Brouillon','sent'=>'Envoyé','paid'=>'Payé','partial'=>'Partiel','overdue'=>'En retard','cancelled'=>'Annulé'];
+            @endphp
+            <span class="filter-tag orange">📌 {{ $statusMap[$filters['status']] ?? $filters['status'] }}</span>
+        @endif
+        @if(!empty($filters['customer_id']))
+            <span class="filter-tag">👤 {{ \App\Models\Module3\Customer::find($filters['customer_id'])->name ?? 'Client' }}</span>
+        @endif
+        @if(empty($filters['date_from']) && empty($filters['date_to']) && empty($filters['status']) && empty($filters['customer_id']))
+            <span style="color:#888; font-size: 9px;">Toutes les factures</span>
+        @endif
+        <span style="margin-left:auto; font-size: 9px; color: #888;">
+            {{ $invoices->count() }} facture(s)
+        </span>
+    </div>
 
+    {{-- ============================================================
+         LISTE DES FACTURES
+    ============================================================ --}}
     @forelse($invoices as $invoice)
-    <div class="invoice-card">
+    @php
+        $statusLabels = [
+            'paid' => 'Payée', 'partial' => 'Partielle', 'draft' => 'Brouillon',
+            'sent' => 'Envoyée', 'overdue' => 'En retard', 'cancelled' => 'Annulée',
+        ];
+        $remaining = $invoice->total - $invoice->paid_amount;
+    @endphp
+    <div class="invoice-block">
 
-        <div class="card-header clearfix">
-            <div class="card-header-left">
-                <span class="invoice-ref">{{ $invoice->reference }}</span>
-                <span class="invoice-date">Émise le {{ $invoice->date->format('d/m/Y') }}</span>
+        {{-- En-tête Facture --}}
+        <div class="invoice-header">
+            <div>
+                <span class="ref">{{ $invoice->reference }}</span>
+                <span class="date">📅 Émise le {{ $invoice->date->format('d/m/Y') }}</span>
             </div>
-            <div class="card-header-right">
-                @php
-                    $statusLabels = [
-                        'paid' => 'Payée', 'partial' => 'Partielle', 'draft' => 'Brouillon',
-                        'sent' => 'Envoyée', 'overdue' => 'En retard', 'cancelled' => 'Annulée',
-                    ];
-                @endphp
+            <div class="right">
                 <span class="status-badge status-{{ $invoice->status }}">
                     {{ $statusLabels[$invoice->status] ?? $invoice->status }}
                 </span>
-                <span class="due-date-label">Échéance : {{ $invoice->due_date->format('d/m/Y') }}</span>
+                <br><span style="color: #6b8c77; font-size: 7px;">⏳ Échéance : {{ $invoice->due_date->format('d/m/Y') }}</span>
             </div>
         </div>
 
-        <div class="card-meta clearfix">
-            <span class="meta-pill"><strong>Client :</strong> {{ $invoice->customer?->name ?? 'Client inconnu/supprimé' }}</span>
+        {{-- Meta Client --}}
+        <div class="invoice-meta">
+            <span><strong>👤 Client :</strong> {{ $invoice->customer->name ?? 'Client inconnu/supprimé' }}</span>
+            @if($invoice->customer?->email)
+                <span><strong>✉</strong> {{ $invoice->customer->email }}</span>
+            @endif
             @if($invoice->customer?->phone)
-                <span class="meta-pill"><strong>Tél :</strong> {{ $invoice->customer->phone }}</span>
+                <span><strong>📞</strong> {{ $invoice->customer->phone }}</span>
+            @endif
+            @if($invoice->notes)
+                <span><strong>📝</strong> {{ $invoice->notes }}</span>
             @endif
         </div>
 
+        {{-- Articles --}}
         @if($invoice->items->count())
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th>Désignation</th>
-                    <th class="center" style="width:50px;">Qté</th>
-                    <th class="right" style="width:120px;">Prix unitaire</th>
-                    <th class="right" style="width:120px;">Total HT</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($invoice->items as $item)
-                <tr>
-                    <td>
-                        @if($item->product)
-                            <strong>{{ $item->product->name }}</strong>
-                            <span class="product-ref">({{ $item->product->reference }})</span>
-                        @elseif($item->description)
-                            <strong>🛠️ {{ $item->description }}</strong>
-                            <span class="service-item">[Service / Prestation]</span>
-                        @else
-                            <strong>📦 Produit / Service</strong>
-                            <span class="service-item">[Information non disponible]</span>
-                        @endif
-                    </td>
-                    <td class="qty-cell">{{ $item->quantity }}</td>
-                    <td class="price-cell">{{ number_format($item->unit_price, 0, ',', ' ') }} FCFA</td>
-                    <td class="total-cell">{{ number_format($item->total, 0, ',', ' ') }} FCFA</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @endif
+        <div class="table-wrap">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width:45%;">Désignation</th>
+                        <th class="center" style="width:12%;">Qté</th>
+                        <th class="right" style="width:20%;">P.U HT</th>
+                        <th class="right" style="width:23%;">P.T HT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($invoice->items as $item)
+                    <tr>
+                        <td>
+                            @if($item->product)
+                                <span class="product-name">{{ $item->product->name }}</span>
+                                <span class="product-ref">({{ $item->product->reference }})</span>
+                            @elseif($item->description)
+                                <span class="product-name">{{ $item->description }}</span>
+                                <span class="product-ref">[Service]</span>
+                            @else
+                                <span class="product-name">📦 Produit / Service</span>
+                            @endif
+                        </td>
+                        <td class="center">{{ $item->quantity }}</td>
+                        <td class="right">{{ number_format($item->unit_price, 0, ',', ' ') }}</td>
+                        <td class="right">{{ number_format($item->total, 0, ',', ' ') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-        <div class="totals-section">
-            <div class="totals-row">
-                <span class="t-label">Sous-total HT</span>
-                <span class="t-value">{{ number_format($invoice->subtotal, 0, ',', ' ') }} FCFA</span>
+        {{-- Totaux (alignés à droite) --}}
+        <div class="invoice-totals">
+            <div class="total-line">
+                <span class="label">Sous-total HT</span>
+                <span class="value">{{ number_format($invoice->subtotal, 0, ',', ' ') }} FCFA</span>
             </div>
-            <div class="totals-row">
-                <span class="t-label">TVA (19,25%)</span>
-                <span class="t-value">{{ number_format($invoice->tax, 0, ',', ' ') }} FCFA</span>
+            <div class="total-line">
+                <span class="label">TVA (19,25%)</span>
+                <span class="value">{{ number_format($invoice->tax, 0, ',', ' ') }} FCFA</span>
             </div>
-            <div class="totals-row">
-                <span class="t-label">Déjà réglé</span>
-                <span class="t-value">{{ number_format($invoice->paid_amount, 0, ',', ' ') }} FCFA</span>
+            @if($invoice->paid_amount > 0)
+            <div class="total-line">
+                <span class="label">Déjà réglé</span>
+                <span class="value" style="color:#1a7a3c;">{{ number_format($invoice->paid_amount, 0, ',', ' ') }} FCFA</span>
             </div>
-            <div class="totals-row total-ttc">
-                <span class="t-label">Total TTC</span>
-                <span class="t-value">{{ number_format($invoice->total, 0, ',', ' ') }} FCFA</span>
+            @endif
+            <div class="total-ttc-line">
+                <span class="label">Total TTC</span>
+                <span class="value">{{ number_format($invoice->total, 0, ',', ' ') }} FCFA</span>
             </div>
-            @php $remaining = $invoice->total - $invoice->paid_amount; @endphp
-            @if($remaining > 0)
-                <div class="totals-row due">
-                    <span class="t-label">Reste à payer</span>
-                    <span class="t-value">{{ number_format($remaining, 0, ',', ' ') }} FCFA</span>
+        </div>
+
+        {{-- Montant en lettres --}}
+        <div class="amount-in-words">
+            <strong>Arrêtée à la somme de :</strong>
+            {{ number_format($invoice->total, 0, ',', ' ') }} Francs CFA TTC
+        </div>
+
+        {{-- Paiements --}}
+        <div class="payments-section">
+            <span class="pay-title">💳 Historique des paiements</span>
+            @if($invoice->payments->count() > 0)
+                @foreach($invoice->payments as $payment)
+                <div class="payment-item">
+                    <span>
+                        {{ $payment->payment_date->format('d/m/Y') }} -
+                        @switch($payment->method)
+                            @case('cash') 💵 Espèces @break
+                            @case('mtn_momo') 📱 MTN MoMo @break
+                            @case('orange_money') 🟠 Orange Money @break
+                            @case('bank_transfer') 🏦 Virement @break
+                            @default {{ $payment->method }}
+                        @endswitch
+                    </span>
+                    <span class="payment-amount">{{ number_format($payment->amount, 0, ',', ' ') }} FCFA</span>
                 </div>
+                @endforeach
+            @else
+                <div class="payment-empty">Aucun paiement enregistré</div>
             @endif
         </div>
+
+        @else
+        <div style="padding: 12px 16px; color: #888; text-align: center; font-size: 10px;">
+            Aucun article dans cette facture
+        </div>
+        @endif
 
     </div>
     @empty
-    <div style="text-align:center; padding:60px 32px; color:#7a9185;">
-        <div style="font-size:30px; margin-bottom:10px;">📄</div>
-        <div style="font-size:10px; font-style:italic;">Aucune facture trouvée pour cette période.</div>
+    <div class="empty-state">
+        <span class="icon">📄</span>
+        <div class="title">Aucune facture trouvée</div>
+        <span class="sub">Aucune facture ne correspond aux filtres appliqués.</span>
     </div>
     @endforelse
 
-    <div class="footer clearfix">
-        <div class="footer-divider"></div>
-        <div class="footer-left">
-            <strong>JR Computer Sarl</strong> &nbsp;·&nbsp; Document confidentiel &nbsp;·&nbsp; Usage interne uniquement
+    {{-- ============================================================
+         PIED DE PAGE
+    ============================================================ --}}
+    <div class="footer">
+        <div class="footer-brand-row">
+            <div class="footer-logo">
+                @if($logoData)
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
+                @else
+                    <span class="fallback">JR</span>
+                @endif
+            </div>
+            <div class="footer-brand-text">
+                <div class="name">Ingénierie Informatique &amp; Télécommunications</div>
+                <div>BP 5226 Douala &nbsp;·&nbsp; Tél : 2 33 42 21 53 / 6 99 96 96 08</div>
+                <div>infos@jr-computer.net &nbsp;·&nbsp; www.jrcomputersarl.com</div>
+            </div>
         </div>
-        <div class="footer-right">ERP System · {{ now()->format('Y') }}</div>
+
+        <div class="footer-tagline">Une équipe d'ingénieurs expérimentés et qualifiés pour vous servir</div>
+
+        <div class="partners-row">
+            <img src="{{ asset('images/ubiquiti.jfif') }}" alt="Ubiquiti">
+            <img src="{{ asset('images/kaspersky.jfif') }}" alt="Kaspersky">
+            <img src="{{ asset('images/hikvision.png') }}" alt="Hikvision">
+            <img src="{{ asset('images/cisco.png') }}" alt="Cisco">
+            <img src="{{ asset('images/apc.png') }}" alt="APC">
+            <img src="{{ asset('images/idirect.jfif') }}" alt="iDirect">
+            <img src="{{ asset('images/dell.png') }}" alt="Dell">
+            <img src="{{ asset('images/hp.png') }}" alt="HP">
+            <img src="{{ asset('images/alhua.jfif') }}" alt="alhua">
+        </div>
+
+        <div class="footer-legal">Document généré par JRC-ERP System · Fait à Douala, le {{ now()->locale('fr')->translatedFormat('d F Y') }}</div>
     </div>
 
-    <div class="footer-bottom clearfix">
-        <div class="fb-left"><strong>JR Computer</strong> · Douala, Cameroun</div>
-        <div class="fb-right">Rapport généré par JRC-ERP System</div>
-    </div>
+</div>
 
 </body>
 </html>

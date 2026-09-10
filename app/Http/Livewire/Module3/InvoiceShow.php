@@ -46,6 +46,7 @@ class InvoiceShow extends Component
         $invoice->save();
         
         session()->flash('message', 'Paiement supprimé.');
+        $this->dispatch('scroll-to-top');
     }
 }
 

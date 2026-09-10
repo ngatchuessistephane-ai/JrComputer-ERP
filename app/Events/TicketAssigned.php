@@ -13,33 +13,40 @@ class TicketAssigned implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $ticket;
+    public SavTicket $ticket;
+    public int $technicianId;
 
-    public function __construct(SavTicket $ticket)
+    public function __construct(SavTicket $ticket, int $technicianId)
     {
         $this->ticket = $ticket;
+        $this->technicianId = $technicianId;
     }
 
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
-        return new Channel('user.' . $this->ticket->assigned_to);
+        return [
+            new Channel('private-user.' . $this->technicianId),
+            new Channel('private-admin'),
+            new Channel('private-manager'),
+        ];
     }
 
-    public function broadcastAs()
+    public function broadcastAs(): string
     {
         return 'ticket.assigned';
     }
 
-    public function broadcastWith()
+    public function broadcastWith(): array
     {
         return [
             'id' => $this->ticket->id,
             'ticket_number' => $this->ticket->ticket_number,
-            'customer_name' => $this->ticket->customer->name,
-            'device_model' => $this->ticket->device_model ?? $this->ticket->product?->name,
+            'customer_name' => $this->ticket->customer?->name ?? 'Client',
+            'device_model' => $this->ticket->device_model,
             'priority' => $this->ticket->priority,
-            'status' => $this->ticket->status,
-            'created_at' => $this->ticket->created_at->toISOString(),
+            'message' => "📋 Nouveau ticket {$this->ticket->ticket_number}",
+            'action_url' => route('module5.tickets.show', $this->ticket->id),
+            'created_at' => $this->ticket->created_at->toIso8601String(),
         ];
     }
 }

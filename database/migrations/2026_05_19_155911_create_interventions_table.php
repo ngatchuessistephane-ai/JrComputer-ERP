@@ -10,11 +10,13 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained('sav_tickets')->onDelete('cascade');
-            $table->text('technical_report');
+            $table->foreignId('ticket_id')->constrained('sav_tickets');
+            $table->foreignId('technician_id')->constrained('users');
+            $table->text('description')->nullable();
+            $table->text('technical_report')->nullable();
             $table->integer('duration_minutes')->nullable();
-            $table->string('client_signature')->nullable(); // chemin de l'image
-            $table->boolean('synced')->default(false);
+            $table->text('client_signature')->nullable();
+            $table->boolean('synced')->default(true);
             $table->timestamps();
         });
     }

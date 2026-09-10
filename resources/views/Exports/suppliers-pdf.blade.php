@@ -173,6 +173,9 @@
             font-family: monospace;
         }
 
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
         .footer {
             margin-top: 10px;
             padding: 10px 32px;
@@ -221,7 +224,7 @@
                 @endif
             </div>
             <div class="meta-section">
-                <div class="doc-badge">🚚 Rapport</div>
+                <div class="doc-badge">📊 RAPPORT</div>
                 <div class="doc-title">Rapport des Fournisseurs</div>
                 <div class="doc-meta">Généré le <strong>{{ now()->format('d/m/Y à H:i') }}</strong></div>
             </div>
@@ -230,30 +233,36 @@
 
     <div class="divider"></div>
 
-    @if($suppliers->count() > 2)
+    @php
+        // Calcul des statistiques
+        $totalSuppliers = $suppliers->count();
+        $avgPaymentTerms = $suppliers->where('payment_terms', '>', 0)->avg('payment_terms') ?: 0;
+        $totalPurchased = $suppliers->sum('total_purchased');
+        $suppliersWithEmail = $suppliers->whereNotNull('email')->count();
+    @endphp
+
     <div class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
-                <span class="stat-value">{{ $suppliers->count() }}</span>
+                <span class="stat-value">{{ $totalSuppliers }}</span>
                 <span class="stat-label">Fournisseurs</span>
             </div>
             <div class="stat-item">
-                <span class="stat-value warn">{{ $suppliers->where('payment_terms', '>', 0)->avg('payment_terms') ?: 0 }}</span>
+                <span class="stat-value warn">{{ round($avgPaymentTerms) }}</span>
                 <span class="stat-label">Délai moyen (jours)</span>
             </div>
             <div class="stat-item">
-                <span class="stat-value">{{ number_format($suppliers->sum('total_purchased'), 0, ',', ' ') }}</span>
+                <span class="stat-value">{{ number_format($totalPurchased, 0, ',', ' ') }}</span>
                 <span class="stat-label">Total acheté (FCFA)</span>
             </div>
             <div class="stat-item">
-                <span class="stat-value">{{ $suppliers->whereNotNull('email')->count() }}</span>
+                <span class="stat-value">{{ $suppliersWithEmail }}</span>
                 <span class="stat-label">Avec email</span>
             </div>
         </div>
     </div>
-    @endif
 
-    <div class="section-title">Liste des fournisseurs</div>
+    <div class="section-title">📋 Liste des fournisseurs</div>
 
     <table class="supplier-table">
         <thead>
@@ -264,25 +273,53 @@
                 <th>Email</th>
                 <th>Téléphone</th>
                 <th>Délai paiement</th>
-                <th>Total acheté (FCFA)</th>
+                <th class="text-right">Total acheté (FCFA)</th>
             </tr>
         </thead>
         <tbody>
             @forelse($suppliers as $supplier)
+            @php
+                $purchasedAmount = $supplier->total_purchased ?? 0;
+            @endphp
             <tr>
                 <td><span class="code-badge">{{ $supplier->code }}</span></td>
-                <td style="font-weight:600;">{{ $supplier->name }}<br><span style="font-size:7px;color:#7a9185;">{{ Str::limit($supplier->address ?? '', 30) }}</span></td>
+                <td style="font-weight:600;">
+                    {{ $supplier->name }}
+                    @if($supplier->address)
+                        <br><span style="font-size:7px;color:#7a9185;">{{ Str::limit($supplier->address, 30) }}</span>
+                    @endif
+                </td>
                 <td>{{ $supplier->contact_person ?? '—' }}</td>
                 <td>{{ $supplier->email ?? '—' }}</td>
                 <td>{{ $supplier->phone ?? '—' }}</td>
-                <td class="center">{{ $supplier->payment_terms }} jours</td>
-                <td class="right">{{ number_format($supplier->total_purchased, 0, ',', ' ') }}</td>
+                <td class="text-center">{{ $supplier->payment_terms }} jours</td>
+                <td class="text-right">
+                    @if($purchasedAmount > 0)
+                        <strong style="color:#1a7a3c;">{{ number_format($purchasedAmount, 0, ',', ' ') }}</strong>
+                    @else
+                        <span style="color:#7a9185;">0</span>
+                    @endif
+                </td>
             </tr>
             @empty
-            <tr><td colspan="7" style="text-align:center; padding:40px;">Aucun fournisseur trouvé.</td></tr>
+            <tr><td colspan="7" style="text-align:center; padding:40px;">
+                    <span style="opacity:0.6;">📭 Aucun fournisseur trouvé</span>
+                </td>
+            </tr>
             @endforelse
         </tbody>
     </table>
+
+    @if($totalPurchased > 0)
+    <div class="stats-section" style="margin-top: -10px; margin-bottom: 10px;">
+        <div class="stats-grid" style="background: #f4faf6;">
+            <div class="stat-item">
+                <span class="stat-value" style="font-size: 14px;">{{ number_format($totalPurchased, 0, ',', ' ') }} FCFA</span>
+                <span class="stat-label">Montant total engagé</span>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <div class="footer clearfix">
         <div class="footer-divider"></div>

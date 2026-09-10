@@ -22,8 +22,10 @@ class TicketShow extends Component
         if (!$this->ticket->is_warranty && $this->ticket->status === 'completed') {
             // Logique de création facture (sera implémentée dans l'API)
             session()->flash('info', 'Fonctionnalité en cours de développement.');
+            $this->dispatch('scroll-to-top');
         } else {
             session()->flash('error', 'Impossible de générer une facture pour un ticket sous garantie.');
+            $this->dispatch('scroll-to-top');
         }
     }
 

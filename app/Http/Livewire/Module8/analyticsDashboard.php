@@ -53,6 +53,7 @@ class AnalyticsDashboard extends Component
     $this->refreshKey++;
     $this->dispatch('refreshCharts');
     session()->flash('message', 'Données actualisées avec succès.');
+    $this->dispatch('scroll-to-top');
 }
 
     public function exportPdf()

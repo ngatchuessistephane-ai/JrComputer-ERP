@@ -84,6 +84,7 @@ public function exportPdf()
         // Puis supprimer la facture
         $invoice->delete();
         session()->flash('message', 'Facture supprimée.');
+        $this->dispatch('scroll-to-top');
     }
 }
 
@@ -95,6 +96,7 @@ public function exportPdf()
         // Ne peut marquer que les factures en statut "sent", "partial" ou "draft" (après confirmation)
         if (!in_array($invoice->status, ['sent', 'partial', 'draft'])) {
             session()->flash('error', 'Cette facture ne peut pas être marquée comme payée.');
+            $this->dispatch('scroll-to-top');
             return;
         }
         
@@ -113,5 +115,6 @@ public function exportPdf()
         ]);
         
         session()->flash('message', 'Facture marquée comme payée.');
+        $this->dispatch('scroll-to-top');
     }
 }

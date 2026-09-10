@@ -32,12 +32,51 @@ class SparePart extends Model
         return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 
-    // Méthode utilitaire pour décrémenter le stock
+    // ✅ Vérifier si le stock est suffisant
+    public function hasSufficientStock(int $quantity): bool
+    {
+        return $this->quantity_in_stock >= $quantity;
+    }
+
+    // ✅ Déduire du stock avec validation
+    public function deductStock(int $quantity): bool
+    {
+        if (!$this->hasSufficientStock($quantity)) {
+            return false;
+        }
+        
+        $this->quantity_in_stock -= $quantity;
+        $this->save();
+        
+        return true;
+    }
+
+    // ✅ Ajouter au stock
+    public function addStock(int $quantity): void
+    {
+        $this->quantity_in_stock += $quantity;
+        $this->save();
+    }
+
+    // ✅ Vérifier si le stock est critique (≤ seuil)
+    public function isLowStock(): bool
+    {
+        return $this->quantity_in_stock <= $this->min_stock_alert;
+    }
+
+    // ✅ Vérifier si le stock est épuisé
+    public function isOutOfStock(): bool
+    {
+        return $this->quantity_in_stock <= 0;
+    }
+
+    // ✅ Méthode utilitaire pour décrémenter le stock (avec exception)
     public function decreaseStock($quantity, $reason, $userId)
     {
-        if ($this->quantity_in_stock < $quantity) {
-            throw new \Exception("Stock insuffisant pour la pièce {$this->name}");
+        if (!$this->hasSufficientStock($quantity)) {
+            throw new \Exception("Stock insuffisant pour la pièce {$this->name}. Disponible: {$this->quantity_in_stock}, Demandé: {$quantity}");
         }
+        
         $this->quantity_in_stock -= $quantity;
         $this->save();
 

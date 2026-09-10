@@ -29,17 +29,28 @@ class SparePartIndex extends Component
         'min_stock_alert' => 'integer|min:0',
     ];
 
-    public function updatingSearch() { $this->resetPage(); }
+    public function updatingSearch() 
+    { 
+        $this->resetPage(); 
+    }
 
     public function render()
     {
         $parts = SparePart::where('name', 'like', '%'.$this->search.'%')
             ->orWhere('part_number', 'like', '%'.$this->search.'%')
             ->paginate(10);
-        return view('livewire.module5.spare-part-index', ['parts' => $parts]);
+        
+        // ✅ Passer les données à la vue avec les indicateurs
+        return view('livewire.module5.spare-part-index', [
+            'parts' => $parts,
+        ]);
     }
 
-    public function create() { $this->resetInput(); $this->showForm = true; }
+    public function create() 
+    { 
+        $this->resetInput(); 
+        $this->showForm = true; 
+    }
 
     public function edit($id)
     {
@@ -68,12 +79,14 @@ class SparePartIndex extends Component
         $this->resetInput();
         $this->showForm = false;
         session()->flash('message', 'Pièce sauvegardée.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function delete($id)
     {
         SparePart::find($id)?->delete();
         session()->flash('message', 'Pièce supprimée.');
+        $this->dispatch('scroll-to-top');
     }
 
     // Ajustement de stock
@@ -95,12 +108,14 @@ class SparePartIndex extends Component
         $part = SparePart::find($this->adjustPartId);
         if (!$part) {
             session()->flash('error', 'Pièce introuvable.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
         $newQty = $part->quantity_in_stock + $this->adjustQuantity;
         if ($newQty < 0) {
             session()->flash('error', 'Le stock ne peut pas devenir négatif.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -118,6 +133,7 @@ class SparePartIndex extends Component
 
         $this->adjustPartId = null;
         session()->flash('message', 'Stock ajusté avec succès.');
+        $this->dispatch('scroll-to-top');
     }
 
     private function resetInput()

@@ -4,180 +4,156 @@
     <meta charset="UTF-8">
     <title>Catalogue Produits – JR Computer Sarl</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        /* ─── STYLES UNIFORMES AVEC INVOICES-PDF ET QUOTES-PDF ─── */
+        /* ✅ SUPPRESSION de l'import Google Fonts (bloquant pour DomPDF) */
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Plus Jakarta Sans', 'DejaVu Sans', sans-serif;
-            font-size: 10px;
-            color: #0d1f14;
+            font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 20px;
+            font-size: 11px;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
             background: #ffffff;
         }
 
-        /* ── TOP ACCENT ── */
-        .top-bar {
-            height: 4px;
-            background: linear-gradient(90deg, #f07d00 0%, #f5a623 30%, #1a7a3c 60%, #0f5229 100%);
+        /* ─── EN-TÊTE / LETTERHEAD ─── */
+        .letterhead {
+            padding: 28px 40px 14px;
+            border-bottom: 1px solid #ccc;
         }
-
-        /* ── HEADER ── */
-        .header {
-            padding: 22px 32px 18px;
-            background: #ffffff;
-            position: relative;
-            overflow: hidden;
+        .letterhead-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
         }
-
-        /* Decorative circle BG */
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 220px;
-            height: 220px;
+        .letterhead-logo {
+            width: 78px;
+            height: 78px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(26,122,60,0.06) 0%, transparent 70%);
-        }
-
-        .header-inner { overflow: hidden; position: relative; z-index: 1; }
-
-        .logo-section { float: left; width: 50%; }
-
-        .logo-img {
-            height: 48px;
-            width: auto;
-            display: block;
-            margin-bottom: 0;
-        }
-
-        .meta-section {
-            float: right;
-            width: 46%;
-            text-align: right;
-            padding-top: 8px;
-        }
-
-        .doc-badge {
-            display: inline-block;
-            background: #0d1f14;
-            color: #ffffff;
-            font-size: 7px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 2px;
-            margin-bottom: 6px;
-        }
-
-        .doc-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0d1f14;
-            line-height: 1.15;
-            margin-bottom: 4px;
-        }
-
-        .doc-meta {
-            font-size: 8px;
-            color: #7a9185;
-        }
-
-        .doc-meta strong { color: #f07d00; font-weight: 700; }
-
-        /* ── DIVIDER ── */
-        .divider {
-            margin: 0 32px;
-            height: 1px;
-            background: linear-gradient(90deg, #1a7a3c 0%, #d4e8da 60%, transparent 100%);
-        }
-
-        /* ── FILTERS ── */
-        .filters-block {
-            margin: 14px 32px 0;
-            background: #fffbf4;
-            border: 1px solid #fde8c0;
-            border-left: 4px solid #f07d00;
-            border-radius: 6px;
-            padding: 9px 14px;
-            font-size: 8.5px;
-            color: #7a4800;
-        }
-
-        .filters-label {
-            font-size: 7.5px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #f07d00;
-            margin-bottom: 5px;
-        }
-
-        .filter-tag {
-            display: inline-block;
-            background: #f07d00;
-            color: #fff;
-            font-size: 7.5px;
-            font-weight: 600;
-            padding: 2px 9px;
-            border-radius: 20px;
-            margin: 0 4px 3px 0;
-        }
-
-        /* ── STATS ── */
-        .stats-bar {
-            margin: 14px 32px 0;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bbb;
             overflow: hidden;
-            display: table;
-            width: calc(100% - 64px);
-            border: 1px solid #d4e8da;
-            border-radius: 8px;
-            background: #f4faf6;
+        }
+        .letterhead-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .letterhead-logo .fallback { font-size: 24px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .letterhead-text { flex: 1; text-align: center; }
+        .letterhead-text .brand-tagline {
+            font-family: 'DejaVu Sans', 'Helvetica', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #8a8a8a;
+            letter-spacing: 0.3px;
+            font-style: italic;
+        }
+        .letterhead-text .brand-meta {
+            font-size: 9.5px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .letterhead-text .brand-meta strong { color: #444; font-weight: 600; }
+
+        /* ─── ZONE DATE / TITRE ─── */
+        .meta-zone { padding: 18px 40px 0; }
+        .meta-title {
+            text-align: center;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #111;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            padding: 6px 14px 6px 4px;
+            background: #ececec;
+            display: inline-block;
+        }
+        .meta-period {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 12px;
+        }
+        .meta-date {
+            text-align: right;
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 12px;
         }
 
-        .stat-item {
+        /* ─── STATS ROW ─── */
+        .stats-row {
+            display: table;
+            width: calc(100% - 80px);
+            margin: 0 40px 16px;
+            border: 1px solid #222;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stats-row .stat {
             display: table-cell;
             text-align: center;
-            padding: 14px 10px;
-            width: 25%;
+            padding: 8px 10px;
+            width: 20%;
+            border-right: 1px solid #222;
         }
-
-        .stat-item + .stat-item {
-            border-left: 1px solid #d4e8da;
-        }
-
-        .stat-icon {
-            font-size: 14px;
-            display: block;
-            margin-bottom: 4px;
-            line-height: 1;
-        }
-
-        .stat-value {
-            font-size: 20px;
+        .stats-row .stat:last-child { border-right: none; }
+        .stats-row .stat-value {
+            font-size: 18px;
             font-weight: 800;
             color: #1a7a3c;
             display: block;
-            line-height: 1.1;
+            line-height: 1.2;
         }
-
-        .stat-value.warn { color: #f07d00; }
-
-        .stat-label {
-            font-size: 7px;
-            color: #7a9185;
+        .stats-row .stat-value.warn { color: #f07d00; }
+        .stats-row .stat-value.danger { color: #dc2626; }
+        .stats-row .stat-label {
+            font-size: 7.5px;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 0.8px;
             font-weight: 600;
             margin-top: 2px;
             display: block;
         }
 
-        /* ── TABLE ── */
+        /* ─── FILTRES ─── */
+        .filters-bar {
+            margin: 0 40px 14px;
+            border: 1px solid #ccc;
+            border-left: 3px solid #f07d00;
+            padding: 6px 12px;
+            font-size: 10px;
+            color: #555;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+            background: #f9f9f9;
+        }
+        .filters-bar .filter-tag {
+            background: #1a7a3c;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+        }
+        .filters-bar .filter-tag.orange { background: #f07d00; }
+        .filters-bar .filter-label { font-weight: 700; color: #1a1a1a; }
+
+        /* ─── TABLE ─── */
         .table-wrap {
-            margin: 16px 32px 0;
+            margin: 0 40px 16px;
         }
 
         .table-title {
@@ -185,285 +161,321 @@
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #7a9185;
-            margin-bottom: 8px;
+            color: #666;
+            margin-bottom: 6px;
         }
 
-        table {
+        /* ✅ TABLEAU CLAIR AVEC LIGNES DE SÉPARATION VISIBLES */
+        .items-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border: 1px solid #e0ede5;
-            border-radius: 8px;
-            overflow: hidden;
+            border-collapse: collapse;
+            font-size: 10px;
+            border: 1.5px solid #111;
         }
 
-        thead tr {
-            background: #0d1f14;
-        }
-
-        thead th {
-            color: #ffffff;
-            padding: 9px 12px;
-            text-align: left;
-            font-size: 7.5px;
+        /* ✅ Lignes d'en-tête épaisses */
+        .items-table thead th {
+            border: 1.5px solid #111;
+            padding: 10px 14px;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        thead th.right { text-align: right; }
-        thead th.center { text-align: center; }
-
-        tbody tr:nth-child(even) { background: #f7fbf8; }
-        tbody tr:nth-child(odd)  { background: #ffffff; }
-        tbody tr { border-bottom: 1px solid #edf5f0; }
-        tbody tr:last-child { border-bottom: none; }
-
-        td {
-            padding: 7px 12px;
+            font-size: 10px;
+            text-align: left;
+            background: #e8ece8;
             color: #0d1f14;
+        }
+        .items-table thead th:first-child { border-left: none; }
+        .items-table thead th:last-child { border-right: none; }
+
+        .items-table thead th.center { text-align: center; }
+        .items-table thead th.right { text-align: right; }
+
+        /* ✅ Lignes de corps nettes et visibles */
+        .items-table tbody td {
+            border: 1px solid #222;
+            padding: 9px 14px;
             vertical-align: middle;
+            color: #111;
+            background: #ffffff;
+        }
+        .items-table tbody td:first-child { border-left: none; }
+        .items-table tbody td:last-child { border-right: none; }
+
+        /* ✅ Ligne de séparation entre chaque ligne (hors dernière) */
+        .items-table tbody tr:not(:last-child) td {
+            border-bottom: 1.5px solid #444;
         }
 
-        .ref-badge {
+        /* ✅ Alternance légère pour la lisibilité */
+        .items-table tbody tr:nth-child(even) td {
+            background: #f7f9f7;
+        }
+        .items-table tbody tr:nth-child(odd) td {
+            background: #ffffff;
+        }
+
+        .items-table tbody tr:last-child td {
+            border-bottom: 1.5px solid #111;
+        }
+
+        .items-table .product-name { font-weight: 600; }
+        .items-table .product-ref {
+            font-size: 9px;
             display: inline-block;
             background: #1a7a3c;
             color: #fff;
-            font-size: 7px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .items-table .center { text-align: center; }
+        .items-table .right { text-align: right; }
+
+        .items-table .empty-row td {
+            color: #888;
+            text-align: center;
+            padding: 30px 12px;
+            border-top: 1.5px solid #111;
+            font-style: italic;
         }
 
         .cat-badge {
             display: inline-block;
             background: #e8f5ee;
             color: #1a7a3c;
-            font-size: 7.5px;
+            font-size: 8px;
             font-weight: 600;
-            padding: 2px 8px;
+            padding: 2px 10px;
             border-radius: 20px;
             border: 1px solid #c0dfc9;
-        }
-
-        td.product-name {
-            font-weight: 600;
-            color: #0d1f14;
-        }
-
-        .price {
-            text-align: right;
-            font-weight: 700;
-            color: #0d1f14;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .price-currency {
-            font-size: 7px;
-            font-weight: 500;
-            color: #7a9185;
-            margin-left: 2px;
-        }
-
-        .qty-ok {
-            text-align: center;
-            color: #1a7a3c;
-            font-weight: 700;
-        }
-
-        .qty-low {
-            text-align: center;
-            color: #f07d00;
-            font-weight: 700;
         }
 
         .low-badge {
             display: inline-block;
             background: #fff3e0;
             color: #f07d00;
-            font-size: 6.5px;
+            font-size: 7px;
             font-weight: 700;
-            padding: 1px 6px;
-            border-radius: 8px;
+            padding: 1px 8px;
+            border-radius: 12px;
             margin-left: 4px;
             border: 1px solid #fde8c0;
         }
 
-        .threshold {
-            text-align: center;
-            color: #a0b8a8;
-            font-size: 9px;
-        }
+        .qty-low { color: #f07d00; font-weight: 700; }
+        .qty-ok  { color: #1a7a3c; font-weight: 700; }
 
-        .supplier-text {
-            color: #4a6155;
-            font-size: 9px;
-        }
-
-        .empty-row td {
-            text-align: center;
-            color: #a0b8a8;
-            padding: 30px;
-            font-style: italic;
-        }
-
-        /* ── FOOTER ── */
+        /* ─── PIED DE PAGE ─── */
         .footer {
             margin-top: 22px;
-            padding: 0 32px 0;
+            border-top: 1px solid #ccc;
+            padding: 16px 40px 18px;
+        }
+        .footer-brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .footer-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid #bbb;
             overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .footer-divider {
-            height: 1px;
-            background: linear-gradient(90deg, #f07d00 0%, #1a7a3c 50%, transparent 100%);
-            margin-bottom: 10px;
-        }
-
-        .footer-inner {
-            overflow: hidden;
-            padding-bottom: 10px;
-        }
-
-        .footer-left {
-            float: left;
-            color: #7a9185;
-            font-size: 7.5px;
-        }
-
-        .footer-left strong { color: #0d1f14; font-weight: 700; }
-
-        .footer-right {
-            float: right;
+        .footer-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .footer-logo .fallback { font-size: 16px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .footer-brand-text { font-size: 10px; line-height: 1.5; color: #333; text-align: center; }
+        .footer-brand-text .name { font-weight: 700; font-size: 11px; }
+        .footer-tagline {
+            text-align: center;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: 600;
             color: #f07d00;
-            font-size: 7.5px;
-            font-weight: 700;
+            margin: 12px 0 12px;
         }
-
-        .footer-bottom {
-            background: #0d1f14;
-            margin-top: 0;
-            padding: 8px 32px;
-            overflow: hidden;
+        .partners-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
         }
-
-        .fb-left {
-            float: left;
-            color: #4a6155;
-            font-size: 7px;
+        .partners-row img {
+            height: 24px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.85;
+            filter: grayscale(15%);
         }
+        .footer-legal { text-align: center; font-size: 8px; color: #999; margin-top: 10px; }
 
-        .fb-left strong { color: #a0c8ae; }
-
-        .fb-right {
-            float: right;
-            color: #f07d00;
-            font-size: 7px;
-            font-weight: 700;
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
         }
+        .empty-state .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .empty-state .title { font-size: 12px; font-weight: 700; color: #1a1a1a; }
+        .empty-state .sub { font-size: 10px; color: #888; }
 
-        .clearfix::after { content: ''; display: table; clear: both; }
+        /* ─── PRINT ─── */
+        @media print {
+            body { background: #ffffff; padding: 10px; }
+            .items-table { page-break-inside: avoid; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-bar"></div>
+<div class="container">
 
-    <div class="header">
-        <div class="header-inner clearfix">
-            <div class="logo-section">
+    {{-- ============================================================
+         EN-TÊTE / LETTERHEAD
+    ============================================================ --}}
+    <div class="letterhead">
+        <div class="letterhead-row">
+            <div class="letterhead-logo">
                 @php
                     $logoPath = public_path('images/logo-jr.jpg');
                     $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
                 @endphp
                 @if($logoData)
-                    <img src="data:image/jpeg;base64,{{ $logoData }}" class="logo-img" alt="JR Computer">
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
                 @else
-                    <div style="font-size:22px;font-weight:800;color:#1a7a3c;">JR Computer</div>
-                    <div style="font-size:8px;color:#f07d00;font-weight:700;letter-spacing:2px;text-transform:uppercase;">Sarl · ERP System</div>
+                    <span class="fallback">JR</span>
                 @endif
             </div>
-            <div class="meta-section">
-                <div class="doc-badge">📦 Catalogue</div>
-                <div class="doc-title">Liste des Produits</div>
-                <div class="doc-meta">Généré le <strong>{{ $generated_at }}</strong></div>
+            <div class="letterhead-text">
+                <div class="brand-tagline">Ingénierie Informatique &amp; Télécommunications</div>
+                <div class="brand-meta">
+                    1390, Boulevard de la République, BP 5226 Douala &nbsp;/&nbsp; infos@jr-computer.net &nbsp;/&nbsp; www.jrcomputersarl.com<br>
+                    Régime : Réel &nbsp;-&nbsp; N° Cont : M020900027385T &nbsp;-&nbsp; R.C : 09/B.732 &nbsp;-&nbsp; CNPS : 351-0109022-N<br>
+                    Tél. : 2 33 42 21 53 / 6 99 96 96 08 / 6 99 00 38 38
+                </div>
             </div>
+            <div style="width:78px; flex-shrink:0;"></div>
         </div>
     </div>
 
-    <div class="divider"></div>
-
-    @if(count($filters))
-    <div class="filters-block">
-        <div class="filters-label">Filtres appliqués</div>
-        @if(!empty($filters['date_from']))<span class="filter-tag">📅 Depuis {{ $filters['date_from'] }}</span>@endif
-        @if(!empty($filters['date_to']))<span class="filter-tag">📅 Jusqu'au {{ $filters['date_to'] }}</span>@endif
-        @if(!empty($filters['price_min']))<span class="filter-tag">Prix ≥ {{ number_format($filters['price_min'],0,',',' ') }} FCFA</span>@endif
-        @if(!empty($filters['price_max']))<span class="filter-tag">Prix ≤ {{ number_format($filters['price_max'],0,',',' ') }} FCFA</span>@endif
-        @if(!empty($filters['category']))<span class="filter-tag">{{ $filters['category'] }}</span>@endif
-        @if(!empty($filters['supplier']))<span class="filter-tag">{{ $filters['supplier'] }}</span>@endif
-        @if(!empty($filters['stock_status']))<span class="filter-tag">Stock : {{ $filters['stock_status'] === 'low' ? '⚠ Bas' : '✓ Normal' }}</span>@endif
+    {{-- ============================================================
+         TITRE
+    ============================================================ --}}
+    <div class="meta-zone">
+        <div style="text-align: center;">
+            <span class="meta-title">CATALOGUE DES PRODUITS</span>
+        </div>
+        <div class="meta-period">{{ $period_label ?? 'Inventaire complet' }}</div>
+        <div class="meta-date">Généré le {{ $generated_at ?? now()->format('d/m/Y à H:i') }}</div>
     </div>
-    @endif
 
-    <div class="stats-bar">
-        <div class="stat-item">
-            <span class="stat-value">{{ $products->count() }}</span>
+    {{-- ============================================================
+         STATISTIQUES
+    ============================================================ --}}
+    @if($products->count() > 0)
+    @php
+        $stats = $stats ?? [
+            'total' => $products->count(),
+            'low_stock' => $products->filter(fn($p) => $p->quantity <= $p->alert_threshold)->count(),
+            'total_units' => $products->sum('quantity'),
+            'categories' => $products->unique('category')->count(),
+        ];
+    @endphp
+    <div class="stats-row">
+        <div class="stat">
+            <span class="stat-value">{{ $stats['total'] }}</span>
             <span class="stat-label">Produits</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-value warn">{{ $products->filter(fn($p) => $p->quantity <= $p->alert_threshold)->count() }}</span>
-            <span class="stat-label">Stock bas</span>
+        <div class="stat">
+            <span class="stat-value warn">{{ $stats['low_stock'] }}</span>
+            <span class="stat-label">⚠ Stock bas</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-value">{{ $products->sum('quantity') }}</span>
+        <div class="stat">
+            <span class="stat-value">{{ $stats['total_units'] }}</span>
             <span class="stat-label">Unités totales</span>
         </div>
-        <div class="stat-item">
-            <span class="stat-value">{{ $products->unique('category')->count() }}</span>
+        <div class="stat">
+            <span class="stat-value">{{ $stats['categories'] }}</span>
             <span class="stat-label">Catégories</span>
         </div>
     </div>
+    @endif
 
+    {{-- ============================================================
+         FILTRES
+    ============================================================ --}}
+    <div class="filters-bar">
+        <span class="filter-label">📋 Filtres :</span>
+        @if(!empty($filters['date_from']) || !empty($filters['date_to']))
+            <span class="filter-tag">📅 {{ $period_label ?? 'Période définie' }}</span>
+        @endif
+        @if(!empty($filters['price_min']))
+            <span class="filter-tag orange">≥ {{ number_format($filters['price_min'],0,',',' ') }} FCFA</span>
+        @endif
+        @if(!empty($filters['price_max']))
+            <span class="filter-tag orange">≤ {{ number_format($filters['price_max'],0,',',' ') }} FCFA</span>
+        @endif
+        @if(!empty($filters['category']))
+            <span class="filter-tag orange">{{ $filters['category'] }}</span>
+        @endif
+        @if(!empty($filters['supplier']))
+            <span class="filter-tag orange">{{ $filters['supplier'] }}</span>
+        @endif
+        @if(!empty($filters['stock_status']))
+            <span class="filter-tag orange">Stock : {{ $filters['stock_status'] === 'low' ? '⚠ Bas' : '✓ Normal' }}</span>
+        @endif
+        @if(empty($filters['date_from']) && empty($filters['date_to']) && empty($filters['price_min']) && empty($filters['price_max']) && empty($filters['category']) && empty($filters['supplier']) && empty($filters['stock_status']))
+            <span style="color:#888; font-size: 9px;">Tous les produits</span>
+        @endif
+        <span style="margin-left:auto; font-size: 9px; color: #888;">
+            {{ $products->count() }} produit(s)
+        </span>
+    </div>
+
+    {{-- ============================================================
+         TABLEAU DES PRODUITS
+    ============================================================ --}}
     <div class="table-wrap">
-        <div class="table-title">Inventaire complet</div>
-        <table>
+        <div class="table-title">📦 Inventaire complet</div>
+        <table class="items-table">
             <thead>
                 <tr>
-                    <th style="width:90px;">Référence</th>
-                    <th>Nom du produit</th>
-                    <th style="width:90px;">Catégorie</th>
-                    <th class="right" style="width:110px;">Prix vente</th>
+                    <th style="width:100px;">Référence</th>
+                    <th style="width:30%;">Nom du produit</th>
+                    <th style="width:100px;">Catégorie</th>
+                    <th class="right" style="width:120px;">Prix vente</th>
                     <th class="center" style="width:70px;">Stock</th>
                     <th class="center" style="width:60px;">Seuil</th>
-                    <th style="width:100px;">Fournisseur</th>
+                    <th style="width:110px;">Fournisseur</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($products as $p)
                 <tr>
-                    <td><span class="ref-badge">{{ $p->reference }}</span></td>
+                    <td><span class="product-ref">{{ $p->reference }}</span></td>
                     <td class="product-name">{{ $p->name }}</td>
                     <td>
                         @if($p->category)
                             <span class="cat-badge">{{ $p->category }}</span>
                         @else
-                            <span style="color:#c0d4c9;">—</span>
+                            <span style="color:#ccc;">—</span>
                         @endif
                     </td>
-                    <td class="price">
-                        {{ number_format($p->selling_price, 0, ',', ' ') }}<span class="price-currency">FCFA</span>
+                    <td class="right">
+                        <strong>{{ number_format($p->selling_price, 0, ',', ' ') }}</strong> FCFA
                     </td>
-                    <td class="{{ $p->quantity <= $p->alert_threshold ? 'qty-low' : 'qty-ok' }}">
+                    <td class="center {{ $p->quantity <= $p->alert_threshold ? 'qty-low' : 'qty-ok' }}">
                         {{ $p->quantity }}
                         @if($p->quantity <= $p->alert_threshold)
                             <span class="low-badge">⚠ Bas</span>
                         @endif
                     </td>
-                    <td class="threshold">{{ $p->alert_threshold }}</td>
-                    <td class="supplier-text">{{ $p->supplier ?? '—' }}</td>
+                    <td class="center">{{ $p->alert_threshold }}</td>
+                    <td>{{ $p->supplier ?? '—' }}</td>
                 </tr>
                 @empty
                 <tr class="empty-row">
@@ -474,20 +486,43 @@
         </table>
     </div>
 
+    {{-- ============================================================
+         PIED DE PAGE
+    ============================================================ --}}
     <div class="footer">
-        <div class="footer-divider"></div>
-        <div class="footer-inner clearfix">
-            <div class="footer-left">
-                <strong>JR Computer Sarl</strong> &nbsp;·&nbsp; Document confidentiel &nbsp;·&nbsp; Usage interne uniquement
+        <div class="footer-brand-row">
+            <div class="footer-logo">
+                @if($logoData)
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
+                @else
+                    <span class="fallback">JR</span>
+                @endif
             </div>
-            <div class="footer-right">ERP System · {{ now()->format('Y') }}</div>
+            <div class="footer-brand-text">
+                <div class="name">Ingénierie Informatique &amp; Télécommunications</div>
+                <div>BP 5226 Douala &nbsp;·&nbsp; Tél : 2 33 42 21 53 / 6 99 96 96 08</div>
+                <div>infos@jr-computer.net &nbsp;·&nbsp; www.jrcomputersarl.com</div>
+            </div>
         </div>
+
+        <div class="footer-tagline">Une équipe d'ingénieurs expérimentés et qualifiés pour vous servir</div>
+
+        <div class="partners-row">
+            <img src="{{ asset('images/ubiquiti.jfif') }}" alt="Ubiquiti">
+            <img src="{{ asset('images/kaspersky.jfif') }}" alt="Kaspersky">
+            <img src="{{ asset('images/hikvision.png') }}" alt="Hikvision">
+            <img src="{{ asset('images/cisco.png') }}" alt="Cisco">
+            <img src="{{ asset('images/apc.png') }}" alt="APC">
+            <img src="{{ asset('images/idirect.jfif') }}" alt="iDirect">
+            <img src="{{ asset('images/dell.png') }}" alt="Dell">
+            <img src="{{ asset('images/hp.png') }}" alt="HP">
+            <img src="{{ asset('images/alhua.jfif') }}" alt="alhua">
+        </div>
+
+        <div class="footer-legal">Document généré par JRC-ERP System · Fait à Douala, le {{ now()->locale('fr')->translatedFormat('d F Y') }}</div>
     </div>
 
-    <div class="footer-bottom clearfix">
-        <div class="fb-left"><strong>JR Computer</strong> · Douala, Cameroun</div>
-        <div class="fb-right">Page catalogue · Généré automatiquement</div>
-    </div>
+</div>
 
 </body>
 </html>

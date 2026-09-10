@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Module2\PurchaseOrder;
+use App\Observers\PurchaseOrderObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+         // Enregistrer l'observateur pour PurchaseOrder
+        PurchaseOrder::observe(PurchaseOrderObserver::class);
     }
     
 }

@@ -35,16 +35,18 @@
     .fg { margin-bottom: 14px; }
     .fg label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
     .fc { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--bg-card); color: var(--text-primary); font-size: 13px; outline: none; }
+
+    .act-btn.view:hover { background: rgba(59,130,246,0.10); color: #3b82f6; }
 </style>
 
 @if(session()->has('message'))<div class="flash-msg success"><i class="bi bi-check-circle-fill"></i>{{ session('message') }}</div>@endif
 @if(session()->has('error'))<div class="flash-msg danger"><i class="bi bi-exclamation-circle-fill"></i>{{ session('error') }}</div>@endif
 
 <div class="module-toolbar">
-    <h2><span class="module-icon green"><i class="bi bi-file-text"></i></span> Devis</h2>
+    <h2><span class="module-icon green"><i class="bi bi-file-earmark-text"></i></span> Factures Proforma</h2>
     <div class="toolbar-actions">
         @can('create quotes')
-        <a href="{{ route('module3.quotes.create') }}" class="btn-brand"><i class="bi bi-plus-lg"></i> Nouveau devis</a>
+        <a href="{{ route('module3.quotes.create') }}" class="btn-brand"><i class="bi bi-plus-lg"></i> Nouvelle Proforma</a>
         @endcan
         <button wire:click="openFiltersModal" class="btn-accent" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
             <i class="bi bi-file-pdf"></i> Exporter PDF
@@ -78,7 +80,7 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>N° Devis</th>
+                    <th>N° Proforma</th>
                     <th>Client</th>
                     <th>Date</th>
                     <th>Valide jusqu'au</th>
@@ -109,6 +111,9 @@
                         <span class="badge-status {{ $s[0] }}"><i class="bi {{ $s[2] }}"></i> {{ $s[1] }}</span>
                     </td>
                     <td style="display:flex;gap:4px;">
+                        <a href="{{ route('module3.quotes.show', $quote->id) }}" class="act-btn view" title="Voir la Proforma">
+        <i class="bi bi-eye"></i>
+    </a>
                         @can('edit quotes')
                         <a href="{{ route('module3.quotes.edit', $quote->id) }}" class="act-btn edit" title="Modifier"><i class="bi bi-pencil"></i></a>
                         @endcan
@@ -119,12 +124,13 @@
                             @endcan
                         @endif
                         @can('delete quotes')
-                        <button wire:click="delete({{ $quote->id }})" onclick="return confirm('Supprimer ce devis ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                        <button wire:click="delete({{ $quote->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer cette Proforma ?" class="act-btn del"><i class="bi bi-trash3"></i>
+</button>
                         @endcan
                     </td>
                 </tr>
                 @empty
-                <tr class="empty-state-row"><td colspan="7">Aucun devis trouvé. Créez votre premier devis.</td></tr>
+                <tr class="empty-state-row"><td colspan="7">Aucune Proforma trouvée. Créez votre première Proforma.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -145,10 +151,10 @@
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="fg"><label>Date devis (début)</label><input type="date" wire:model="filter_date_from" class="fc"></div>
+                        <div class="fg"><label>Date Proforma (début)</label><input type="date" wire:model="filter_date_from" class="fc"></div>
                     </div>
                     <div class="col-md-6">
-                        <div class="fg"><label>Date devis (fin)</label><input type="date" wire:model="filter_date_to" class="fc"></div>
+                        <div class="fg"><label>Date Proforma (fin)</label><input type="date" wire:model="filter_date_to" class="fc"></div>
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Statut</label>
@@ -186,6 +192,13 @@
     window.addEventListener('openFiltersModal', () => {
         const modalEl = document.getElementById('exportFiltersModal');
         if (modalEl) new bootstrap.Modal(modalEl).show();
+    });
+</script>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     });
 </script>
 </div>

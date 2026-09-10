@@ -182,10 +182,11 @@
     <div class="toolbar-actions">
        @can('create products')
         <button wire:click="create" class="btn-brand"><i class="bi bi-plus-lg"></i> Nouveau produit</button>
-       @endcan
+       
         <button type="button" class="btn-ghost" data-bs-toggle="modal" data-bs-target="#importModal">
             <i class="bi bi-upload"></i> Importer Excel
         </button>
+        @endcan
         {{-- Dans la toolbar, remplacez le bouton Exporter PDF --}}
        <button type="button" wire:click="openExportModal" class="btn-accent" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
     <i class="bi bi-file-pdf"></i> Exporter PDF
@@ -245,7 +246,9 @@
                             <button wire:click="openAdjustStock({{ $p->id }})" class="act-btn stock-btn" title="Ajuster stock" data-bs-toggle="modal" data-bs-target="#adjustModal"><i class="bi bi-graph-up-arrow"></i></button>
                            @endcan
                            @can('delete products')
-                           <button wire:click="delete({{ $p->id }})" onclick="return confirm('Supprimer ce produit ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                           <button wire:click="delete({{ $p->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer ce produit ?" class="act-btn del" title="Supprimer">
+    <i class="bi bi-trash3"></i>
+</button>
                            @endcan
                         </div>
                     </td>
@@ -284,7 +287,24 @@
                         <div class="col-md-6"><div class="fg"><label>Nom *</label><input type="text" wire:model="name" class="fc @error('name') is-invalid @enderror">@error('name')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
                         <div class="col-md-6"><div class="fg"><label>Référence *</label><input type="text" wire:model="reference" class="fc @error('reference') is-invalid @enderror">@error('reference')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
                         <div class="col-md-6"><div class="fg"><label>N° Série</label><input type="text" wire:model="serial_number" class="fc @error('serial_number') is-invalid @enderror">@error('serial_number')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
-                        <div class="col-md-6"><div class="fg"><label>Catégorie</label><input type="text" wire:model="category" class="fc @error('category') is-invalid @enderror">@error('category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
+
+                        <div class="col-md-6">
+    <div class="fg">
+        <label>Catégorie</label>
+        <input type="text" list="categoryList" wire:model="category"
+               class="fc @error('category') is-invalid @enderror"
+               placeholder="Sélectionner ou saisir une nouvelle catégorie">
+        <datalist id="categoryList">
+            @foreach($categories as $cat)
+                <option value="{{ $cat }}"></option>
+            @endforeach
+        </datalist>
+        @error('category')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+    </div>
+</div>
+
+                        
+
                         <div class="col-md-6"><div class="fg"><label>Prix achat (FCFA)</label><input type="number" step="0.01" wire:model="purchase_price" class="fc @error('purchase_price') is-invalid @enderror">@error('purchase_price')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
                         <div class="col-md-6"><div class="fg"><label>Prix vente * (FCFA)</label><input type="number" step="0.01" wire:model="selling_price" class="fc @error('selling_price') is-invalid @enderror">@error('selling_price')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
                         <div class="col-md-4"><div class="fg"><label>Quantité initiale</label><input type="number" wire:model="quantity" class="fc @error('quantity') is-invalid @enderror">@error('quantity')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror</div></div>
@@ -372,7 +392,7 @@
 </div>
 
 {{-- MODAL FILTRES EXPORT PDF --}}
-<div class="modal fade modal-jr" id="exportFiltersModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade modal-jr" id="exportFiltersModal" tabindex="-1" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background:linear-gradient(135deg, #dc2626, #ef4444);">
@@ -383,27 +403,27 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="fg"><label>Date création (début)</label>
-                            <input type="date" wire:model.live="filter_date_from" class="fc">
+                            <input type="date" wire:model.change="filter_date_from" class="fc">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Date création (fin)</label>
-                            <input type="date" wire:model.live="filter_date_to" class="fc">
+                            <input type="date" wire:model.change="filter_date_to" class="fc">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Prix min (FCFA)</label>
-                            <input type="number" wire:model.live="filter_price_min" class="fc" step="1000">
+                            <input type="number" wire:model.change="filter_price_min" class="fc" step="1000">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Prix max (FCFA)</label>
-                            <input type="number" wire:model.live="filter_price_max" class="fc" step="1000">
+                            <input type="number" wire:model.change="filter_price_max" class="fc" step="1000">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Catégorie</label>
-                            <select wire:model.live="filter_category" class="fc">
+                            <select wire:model.change="filter_category" class="fc">
                                 <option value="">Toutes catégories</option>
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat }}">{{ $cat }}</option>
@@ -413,7 +433,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Fournisseur</label>
-                            <select wire:model.live="filter_supplier" class="fc">
+                            <select wire:model.change="filter_supplier" class="fc">
                                 <option value="">Tous fournisseurs</option>
                                 @foreach($suppliersList as $supp)
                                     <option value="{{ $supp->name }}">{{ $supp->name }}</option>
@@ -423,7 +443,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="fg"><label>Stock</label>
-                            <select wire:model.live="filter_stock_status" class="fc">
+                            <select wire:model.change="filter_stock_status" class="fc">
                                 <option value="">Tous</option>
                                 <option value="low">Stock bas (≤ seuil)</option>
                                 <option value="ok">Stock normal</option>
@@ -527,5 +547,13 @@
         // Réinitialiser après chaque navigation Livewire
         document.addEventListener('livewire:navigated', initModals);
     })();
+
+</script>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
 </script>
 </div>

@@ -21,6 +21,10 @@ return new class extends Migration
             $table->foreignId('assigned_to')->nullable()->constrained('users');
             $table->boolean('is_warranty')->default(false);
             $table->date('warranty_end_date')->nullable();
+            $table->text('technical_report')->nullable();      // ✅ AJOUTÉ
+            $table->integer('duration_minutes')->nullable();   // ✅ AJOUTÉ
+            $table->timestamp('closed_at')->nullable();        // ✅ AJOUTÉ
+            $table->foreignId('created_by')->nullable()->constrained('users');  // ✅ AJOUTÉ
             $table->timestamps();
         });
     }

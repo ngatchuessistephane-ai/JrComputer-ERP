@@ -60,6 +60,20 @@ class PurchaseOrderIndex extends Component
         ]);
     }
 
+    // ✅ NOUVELLE MÉTHODE : Charger le prix d'achat automatiquement quand on sélectionne un produit
+    public function updatedSelectedProduct($value)
+    {
+        if ($value) {
+            $product = Product::find($value);
+            if ($product) {
+                // Pré-remplir le prix unitaire avec le prix d'achat du produit
+                $this->unitPrice = $product->purchase_price;
+            }
+        } else {
+            $this->unitPrice = null;
+        }
+    }
+
     public function create()
     {
         $this->reset(['purchaseOrderId', 'supplier_id', 'order_date', 'expected_delivery_date', 'notes', 'items']);
@@ -78,6 +92,7 @@ class PurchaseOrderIndex extends Component
         $this->notes = $po->notes;
         $this->items = $po->items->map(fn($item) => [
             'product_id' => $item->product_id,
+            'product_name' => $item->product->name,
             'quantity_ordered' => $item->quantity_ordered,
             'unit_price' => $item->unit_price,
             'total' => $item->total,
@@ -156,6 +171,7 @@ class PurchaseOrderIndex extends Component
 
         $this->resetInputForm();
         session()->flash('message', 'Bon de commande sauvegardé.');
+        $this->dispatch('scroll-to-top');
     }
 
     private function generateReference()
@@ -170,6 +186,7 @@ class PurchaseOrderIndex extends Component
         $po = PurchaseOrder::with('items')->findOrFail($id);
         if ($po->status === 'received') {
             session()->flash('error', 'Déjà réceptionnée.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -184,6 +201,7 @@ class PurchaseOrderIndex extends Component
         $po->status = 'received';
         $po->save();
         session()->flash('message', 'Commande réceptionnée et stock mis à jour.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function cancelOrder($id)
@@ -191,11 +209,13 @@ class PurchaseOrderIndex extends Component
         $po = PurchaseOrder::findOrFail($id);
         if ($po->status === 'received') {
             session()->flash('error', 'Impossible d’annuler une commande déjà reçue.');
+            $this->dispatch('scroll-to-top');
             return;
         }
         $po->status = 'cancelled';
         $po->save();
         session()->flash('message', 'Commande annulée.');
+        $this->dispatch('scroll-to-top');
     }
 
     // Ouvre la modal de filtres PDF

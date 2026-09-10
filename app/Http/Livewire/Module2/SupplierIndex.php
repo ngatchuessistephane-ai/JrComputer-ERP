@@ -81,12 +81,14 @@ class SupplierIndex extends Component
         $this->resetInput();
         $this->showForm = false;
         session()->flash('message', 'Fournisseur sauvegardé.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function delete($id)
     {
         Supplier::find($id)?->delete();
         session()->flash('message', 'Fournisseur supprimé.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function import()
@@ -94,6 +96,7 @@ class SupplierIndex extends Component
         $this->validate(['importFile' => 'required|file|mimes:xlsx,csv']);
         Excel::import(new SuppliersImport, $this->importFile);
         session()->flash('message', 'Import fournisseurs terminé.');
+        $this->dispatch('scroll-to-top');
         $this->importFile = null;
     }
 

@@ -2,370 +2,504 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Rapport Devis – JR Computer Sarl</title>
+    <title>Rapport Proformas – JR Computer Sarl</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        /* ─── STYLES IDENTIQUES À PROFORMA-PDF ─── */
+        /* ✅ SUPPRESSION de l'import Google Fonts (bloquant pour DomPDF) */
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Plus Jakarta Sans', 'DejaVu Sans', sans-serif;
-            font-size: 10px;
-            color: #0d1f14;
-            background: #f9fbfa;
-        }
-
-        .top-bar {
-            height: 5px;
-            background: linear-gradient(90deg, #f07d00 0%, #f5a623 30%, #1a7a3c 60%, #0f5229 100%);
-        }
-
-        .header {
+            font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif;
             background: #ffffff;
-            padding: 22px 32px 18px;
-            border-bottom: 1px solid #e0ede5;
-            position: relative;
-            overflow: hidden;
+            color: #1a1a1a;
+            padding: 20px;
+            font-size: 11px;
         }
 
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            right: -40px;
-            width: 180px;
-            height: 180px;
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: #ffffff;
+        }
+
+        /* ─── EN-TÊTE / LETTERHEAD ─── */
+        .letterhead {
+            padding: 28px 40px 14px;
+            border-bottom: 1px solid #ccc;
+        }
+        .letterhead-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .letterhead-logo {
+            width: 78px;
+            height: 78px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(240,125,0,0.07) 0%, transparent 70%);
-        }
-
-        .header-inner { overflow: hidden; position: relative; z-index: 1; }
-        .logo-section { float: left; width: 50%; }
-        .meta-section { float: right; width: 46%; text-align: right; padding-top: 6px; }
-
-        .logo-img { height: 50px; width: auto; display: block; }
-
-        .doc-badge {
-            display: inline-block;
-            background: #0d1f14;
-            color: #ffffff;
-            font-size: 7px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 2px;
-            margin-bottom: 6px;
-        }
-
-        .doc-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0d1f14;
-            line-height: 1.15;
-            margin-bottom: 4px;
-        }
-
-        .doc-meta {
-            font-size: 8px;
-            color: #7a9185;
-        }
-
-        .doc-meta strong { color: #f07d00; font-weight: 700; }
-
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, #1a7a3c 0%, #d4e8da 60%, transparent 100%);
-            margin: 0 32px;
-        }
-
-        .stats-section {
-            margin: 16px 32px 0;
-        }
-
-        .stats-grid {
-            display: table;
-            width: 100%;
-            border: 1px solid #d4e8da;
-            border-radius: 10px;
-            background: #ffffff;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bbb;
             overflow: hidden;
         }
+        .letterhead-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .letterhead-logo .fallback { font-size: 24px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .letterhead-text { flex: 1; text-align: center; }
+        .letterhead-text .brand-tagline {
+            font-family: 'DejaVu Sans', 'Helvetica', sans-serif;
+            font-size: 27px;
+            font-weight: 700;
+            color: #8a8a8a;
+            letter-spacing: 0.3px;
+            font-style: italic;
+        }
+        .letterhead-text .brand-meta {
+            font-size: 9.5px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .letterhead-text .brand-meta strong { color: #444; font-weight: 600; }
 
-        .stat-item {
+        /* ─── ZONE DATE / TITRE ─── */
+        .meta-zone { padding: 18px 40px 0; }
+        .meta-title {
+            text-align: center;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #111;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            padding: 6px 14px 6px 4px;
+            background: #ececec;
+            display: inline-block;
+        }
+        .meta-period {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 12px;
+        }
+        .meta-date {
+            text-align: right;
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        /* ─── STATS ROW ─── */
+        .stats-row {
+            display: table;
+            width: calc(100% - 80px);
+            margin: 0 40px 16px;
+            border: 1px solid #222;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stats-row .stat {
             display: table-cell;
             text-align: center;
-            padding: 16px 10px;
+            padding: 8px 10px;
+            width: 20%;
+            border-right: 1px solid #222;
         }
-
-        .stat-item + .stat-item { border-left: 1px solid #e8f2eb; }
-
-        .stat-value {
-            font-size: 20px;
+        .stats-row .stat:last-child { border-right: none; }
+        .stats-row .stat-value {
+            font-size: 18px;
             font-weight: 800;
             color: #1a7a3c;
             display: block;
-            line-height: 1.1;
+            line-height: 1.2;
         }
-
-        .stat-value.warn { color: #f07d00; }
-
-        .stat-label {
-            font-size: 7px;
-            color: #7a9185;
+        .stats-row .stat-value.warn { color: #f07d00; }
+        .stats-row .stat-value.danger { color: #dc2626; }
+        .stats-row .stat-label {
+            font-size: 7.5px;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 0.8px;
             font-weight: 600;
-            margin-top: 3px;
-            display: block;
-        }
-
-        .section-title {
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #7a9185;
-            margin: 18px 32px 10px;
-        }
-
-        .quote-card {
-            margin: 0 32px 20px;
-            background: #ffffff;
-            border: 1px solid #dceae1;
-            border-radius: 12px;
-            overflow: hidden;
-            page-break-inside: avoid;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        .card-header {
-            background: #0d1f14;
-            padding: 12px 18px;
-            overflow: hidden;
-        }
-
-        .card-header-left { float: left; }
-        .card-header-right { float: right; text-align: right; }
-
-        .quote-ref {
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: block;
-        }
-
-        .quote-date {
-            color: #6b8c77;
-            font-size: 8px;
             margin-top: 2px;
             display: block;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
+        /* ─── FILTRES ─── */
+        .filters-bar {
+            margin: 0 40px 14px;
+            border: 1px solid #ccc;
+            border-left: 3px solid #f07d00;
+            padding: 6px 12px;
+            font-size: 10px;
+            color: #555;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 14px;
+            background: #f9f9f9;
+        }
+        .filters-bar .filter-tag {
+            background: #1a7a3c;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 7.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.3px;
         }
+        .filters-bar .filter-tag.orange { background: #f07d00; }
+        .filters-bar .filter-label { font-weight: 700; color: #1a1a1a; }
 
-        .status-draft    { background: #f1f5f9; color: #475569; }
-        .status-sent     { background: #dbeafe; color: #1e40af; }
-        .status-accepted { background: #d1fae5; color: #065f46; }
-        .status-rejected { background: #fee2e2; color: #991b1b; }
-        .status-converted { background: #f0fdf4; color: #1a7a3c; }
-
-        .validity-label {
-            color: #6b8c77;
-            font-size: 7.5px;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .card-meta {
-            background: #f4faf6;
-            padding: 10px 18px;
-            border-bottom: 1px solid #dceae1;
+        /* ─── BLOC PROFORMA ─── */
+        .proforma-block {
+            margin: 0 40px 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             overflow: hidden;
+            page-break-inside: avoid;
         }
+        .proforma-header {
+            background: #0d1f14;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .proforma-header .ref {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .proforma-header .date {
+            color: #6b8c77;
+            font-size: 8px;
+        }
+        .proforma-header .right { text-align: right; }
 
-        .meta-pill {
-            float: left;
-            margin-right: 20px;
-            font-size: 8.5px;
+        .proforma-meta {
+            background: #f4faf6;
+            padding: 6px 16px;
+            border-bottom: 1px solid #dceae1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            font-size: 9px;
             color: #4a6155;
         }
+        .proforma-meta strong { color: #1a7a3c; }
 
-        .meta-pill strong { color: #1a7a3c; font-weight: 700; }
-
+        /* ─── TABLEAU PROFORMA ─── */
+        .table-wrap {
+            margin: 0;
+            border: none;
+            padding: 0 4px;
+        }
         .items-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 10px;
         }
-
-        .items-table thead tr { background: #f0f8f3; }
-
-        .items-table th {
-            padding: 10px 16px;
-            text-align: left;
-            font-size: 8px;
+        .items-table thead th {
+            border: 1px solid #222;
+            border-top: none;
+            padding: 8px 14px;
             font-weight: 700;
-            color: #1a7a3c;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #dceae1;
+            font-size: 10px;
+            text-align: left;
+            background: #f5f5f5;
+        }
+        .items-table thead th:first-child { border-left: none; }
+        .items-table thead th:last-child { border-right: none; }
+        .items-table thead th.center { text-align: center; }
+        .items-table thead th.right { text-align: right; }
+
+        .items-table tbody td {
+            border: 1px solid #222;
+            border-top: none;
+            border-bottom: none;
+            padding: 8px 14px;
+            vertical-align: top;
+            color: #111;
+        }
+        .items-table tbody td:first-child { border-left: none; }
+        .items-table tbody td:last-child { border-right: none; }
+        .items-table tbody tr:last-child td { padding-bottom: 12px; }
+
+        .items-table .product-name { font-weight: 600; }
+        .items-table .product-ref { font-size: 9px; color: #666; }
+        .items-table .center { text-align: center; }
+        .items-table .right { text-align: right; }
+        .items-table .empty-row td {
+            color: #888;
+            text-align: center;
+            padding: 20px 12px;
+            border-top: 1px solid #222;
         }
 
-        .items-table th.right { text-align: right; }
-        .items-table th.center { text-align: center; }
-
-        .items-table td {
-            padding: 9px 16px;
-            border-bottom: 1px solid #edf5f0;
-            color: #0d1f14;
-            vertical-align: middle;
-        }
-
-        .items-table tbody tr:last-child td { border-bottom: none; }
-        .items-table tbody tr:nth-child(even) { background: #f9fdfb; }
-
-        .product-ref {
-            color: #7a9185;
-            font-size: 8px;
-            margin-left: 4px;
-        }
-
-        .qty-cell { text-align: center; font-weight: 700; color: #1a7a3c; }
-        .price-cell { text-align: right; color: #4a6155; }
-        .total-cell { text-align: right; font-weight: 700; color: #0d1f14; }
-
-        .totals-section {
-            padding: 16px 20px;
+        /* ─── TOTAUX PROFORMA (ALIGNÉS À DROITE) ─── */
+        .proforma-totals {
+            padding: 10px 16px 10px;
             background: #fafcfb;
             border-top: 2px solid #dceae1;
-            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
-        .totals-row {
+        .proforma-totals .total-line {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 24px;
-            font-size: 9px;
+            width: 100%;
+            padding: 3px 0;
+            border-bottom: 1px dashed #e0e8e3;
+        }
+
+        .proforma-totals .total-line:last-of-type {
+            border-bottom: none;
+        }
+
+        .proforma-totals .total-line .label {
             color: #4a6155;
-            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 10px;
+            margin-right: 20px;
+            min-width: 100px;
+            text-align: right;
         }
 
-        .totals-row .t-label { font-weight: 500; }
-        .totals-row .t-value { font-weight: 600; min-width: 110px; text-align: right; }
+        .proforma-totals .total-line .value {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 10px;
+            min-width: 140px;
+            text-align: right;
+            padding-right: 2px;
+        }
 
-        .totals-row.total-ttc {
-            font-size: 13px;
-            color: #0d1f14;
+        .proforma-totals .total-ttc-line {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+            padding: 6px 0 2px;
+            border-top: 2.5px solid #1a7a3c;
+            margin-top: 4px;
+        }
+
+        .proforma-totals .total-ttc-line .label {
             font-weight: 800;
-            border-top: 2px solid #dceae1;
-            padding-top: 12px;
-            margin-top: 8px;
-            margin-bottom: 10px;
+            color: #1a7a3c;
+            font-size: 11px;
+            margin-right: 20px;
+            min-width: 100px;
+            text-align: right;
         }
 
-        .totals-row.total-ttc .t-value { color: #1a7a3c; font-size: 14px; }
+        .proforma-totals .total-ttc-line .value {
+            font-weight: 800;
+            color: #1a7a3c;
+            font-size: 13px;
+            min-width: 140px;
+            text-align: right;
+            padding-right: 2px;
+        }
 
+        /* ─── STATUS BADGE ─── */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+        .status-draft    { background: #6b7280; }
+        .status-sent     { background: #3b82f6; }
+        .status-accepted { background: #10b981; }
+        .status-rejected { background: #ef4444; }
+        .status-converted { background: #8b5cf6; }
+
+        /* ─── PIED DE PAGE ─── */
         .footer {
-            margin-top: 10px;
-            padding: 10px 32px;
+            margin-top: 22px;
+            border-top: 1px solid #ccc;
+            padding: 16px 40px 18px;
+        }
+        .footer-brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .footer-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid #bbb;
             overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .footer-divider {
-            height: 1px;
-            background: linear-gradient(90deg, #f07d00 0%, #1a7a3c 50%, transparent 100%);
-            margin-bottom: 10px;
+        .footer-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .footer-logo .fallback { font-size: 16px; font-weight: 900; color: #2f6b3f; font-family: 'DejaVu Sans', sans-serif; }
+        .footer-brand-text { font-size: 10px; line-height: 1.5; color: #333; text-align: center; }
+        .footer-brand-text .name { font-weight: 700; font-size: 11px; }
+        .footer-tagline {
+            text-align: center;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: 600;
+            color: #f07d00;
+            margin: 12px 0 12px;
         }
-
-        .footer-left { float: left; color: #7a9185; font-size: 7.5px; }
-        .footer-left strong { color: #0d1f14; }
-        .footer-right { float: right; color: #f07d00; font-size: 7.5px; font-weight: 700; }
-
-        .footer-bottom {
-            background: #0d1f14;
-            padding: 8px 32px;
-            overflow: hidden;
+        .partners-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
         }
+        .partners-row img {
+            height: 24px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.85;
+            filter: grayscale(15%);
+        }
+        .footer-legal { text-align: center; font-size: 8px; color: #999; margin-top: 10px; }
 
-        .fb-left { float: left; color: #4a6155; font-size: 7px; }
-        .fb-left strong { color: #a0c8ae; }
-        .fb-right { float: right; color: #f07d00; font-size: 7px; font-weight: 700; }
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+        .empty-state .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+        .empty-state .title { font-size: 12px; font-weight: 700; color: #1a1a1a; }
+        .empty-state .sub { font-size: 10px; color: #888; }
 
-        .clearfix::after { content: ''; display: table; clear: both; }
+        /* ─── PRINT ─── */
+        @media print {
+            body { background: #ffffff; padding: 10px; }
+            .proforma-block { page-break-inside: avoid; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-bar"></div>
+<div class="container">
 
-    <div class="header">
-        <div class="header-inner clearfix">
-            <div class="logo-section">
+    {{-- ============================================================
+         EN-TÊTE / LETTERHEAD
+    ============================================================ --}}
+    <div class="letterhead">
+        <div class="letterhead-row">
+            <div class="letterhead-logo">
                 @php
                     $logoPath = public_path('images/logo-jr.jpg');
                     $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
                 @endphp
                 @if($logoData)
-                    <img src="data:image/jpeg;base64,{{ $logoData }}" class="logo-img" alt="JR Computer">
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
                 @else
-                    <div style="font-size:22px;font-weight:800;color:#1a7a3c;">JR Computer</div>
-                    <div style="font-size:8px;color:#f07d00;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:3px;">Sarl · ERP System</div>
+                    <span class="fallback">JR</span>
                 @endif
             </div>
-            <div class="meta-section">
-                <div class="doc-badge">📄 Rapport</div>
-                <div class="doc-title">Rapport des Devis</div>
-                <div class="doc-meta">Généré le <strong>{{ now()->format('d/m/Y à H:i') }}</strong></div>
+            <div class="letterhead-text">
+                <div class="brand-tagline">Ingénierie Informatique &amp; Télécommunications</div>
+                <div class="brand-meta">
+                    1390, Boulevard de la République, BP 5226 Douala &nbsp;/&nbsp; infos@jr-computer.net &nbsp;/&nbsp; www.jrcomputersarl.com<br>
+                    Régime : Réel &nbsp;-&nbsp; N° Cont : M020900027385T &nbsp;-&nbsp; R.C : 09/B.732 &nbsp;-&nbsp; CNPS : 351-0109022-N<br>
+                    Tél. : 2 33 42 21 53 / 6 99 96 96 08 / 6 99 00 38 38
+                </div>
             </div>
+            <div style="width:78px; flex-shrink:0;"></div>
         </div>
     </div>
 
-    <div class="divider"></div>
+    {{-- ============================================================
+         TITRE
+    ============================================================ --}}
+    <div class="meta-zone">
+        <div style="text-align: center;">
+            <span class="meta-title">LISTE DES PROFORMAS</span>
+        </div>
+        <div class="meta-period">Période : {{ $period_label }}</div>
+        <div class="meta-date">Généré le {{ $generated_at }}</div>
+    </div>
 
-    @if($quotes->count() > 2)
-    <div class="stats-section">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-value">{{ $quotes->count() }}</span>
-                <span class="stat-label">Devis</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value warn">{{ $quotes->where('status', 'sent')->count() }}</span>
-                <span class="stat-label">Envoyés</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value">{{ number_format($quotes->sum('total'), 0, ',', ' ') }}</span>
-                <span class="stat-label">Total TTC (FCFA)</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value">{{ $quotes->where('status', 'accepted')->count() }}</span>
-                <span class="stat-label">Acceptés</span>
-            </div>
+    {{-- ============================================================
+         STATISTIQUES
+    ============================================================ --}}
+    @if($quotes->count() > 0)
+    <div class="stats-row">
+        <div class="stat">
+            <span class="stat-value">{{ $stats['total'] }}</span>
+            <span class="stat-label">Total</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ number_format($stats['total_amount'], 0, ',', ' ') }}</span>
+            <span class="stat-label">Montant Total (FCFA)</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value warn">{{ $stats['sent_count'] }}</span>
+            <span class="stat-label">📤 Envoyées</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ $stats['accepted_count'] }}</span>
+            <span class="stat-label">✅ Acceptées</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value danger">{{ $stats['rejected_count'] }}</span>
+            <span class="stat-label">❌ Rejetées</span>
         </div>
     </div>
     @endif
 
-    <div class="section-title">Détail des devis</div>
+    {{-- ============================================================
+         FILTRES
+    ============================================================ --}}
+    <div class="filters-bar">
+        <span class="filter-label">📋 Filtres :</span>
+        @if(!empty($filters['date_from']) || !empty($filters['date_to']))
+            <span class="filter-tag">📅 {{ $period_label }}</span>
+        @endif
+        @if(!empty($filters['status']))
+            @php
+                $statusMap = ['draft'=>'Brouillon','sent'=>'Envoyé','accepted'=>'Accepté','rejected'=>'Rejeté','converted'=>'Converti'];
+            @endphp
+            <span class="filter-tag orange">📌 {{ $statusMap[$filters['status']] ?? $filters['status'] }}</span>
+        @endif
+        @if(!empty($filters['customer_id']))
+            <span class="filter-tag">👤 {{ \App\Models\Module3\Customer::find($filters['customer_id'])->name ?? 'Client' }}</span>
+        @endif
+        @if(empty($filters['date_from']) && empty($filters['date_to']) && empty($filters['status']) && empty($filters['customer_id']))
+            <span style="color:#888; font-size: 9px;">Toutes les Proformas</span>
+        @endif
+        <span style="margin-left:auto; font-size: 9px; color: #888;">
+            {{ $quotes->count() }} proforma(s)
+        </span>
+    </div>
 
+    {{-- ============================================================
+         LISTE DES PROFORMAS
+    ============================================================ --}}
     @forelse($quotes as $quote)
-    <div class="quote-card">
+    <div class="proforma-block">
 
-        <div class="card-header clearfix">
-            <div class="card-header-left">
-                <span class="quote-ref">{{ $quote->reference }}</span>
-                <span class="quote-date">Émis le {{ $quote->date->format('d/m/Y') }}</span>
+        {{-- En-tête Proforma --}}
+        <div class="proforma-header">
+            <div>
+                <span class="ref">{{ $quote->reference }}</span>
+                <span class="date">📅 Émise le {{ $quote->date->format('d/m/Y') }}</span>
             </div>
-            <div class="card-header-right">
+            <div class="right">
                 @php
                     $statusLabels = [
                         'draft' => 'Brouillon', 'sent' => 'Envoyé', 'accepted' => 'Accepté',
@@ -376,76 +510,125 @@
                     {{ $statusLabels[$quote->status] ?? $quote->status }}
                 </span>
                 @if($quote->valid_until)
-                <span class="validity-label">Valable jusqu’au {{ $quote->valid_until->format('d/m/Y') }}</span>
+                    <br><span style="color: #6b8c77; font-size: 7px;">⏳ Valable jusqu’au {{ $quote->valid_until->format('d/m/Y') }}</span>
                 @endif
             </div>
         </div>
 
-        <div class="card-meta clearfix">
-            <span class="meta-pill"><strong>Client :</strong> {{ $quote->customer->name }}</span>
+        {{-- Meta Client --}}
+        <div class="proforma-meta">
+            <span><strong>👤 Client :</strong> {{ $quote->customer->name ?? '—' }}</span>
+            @if($quote->customer?->email)
+                <span><strong>✉</strong> {{ $quote->customer->email }}</span>
+            @endif
+            @if($quote->customer?->phone)
+                <span><strong>📞</strong> {{ $quote->customer->phone }}</span>
+            @endif
+            @if($quote->notes)
+                <span><strong>📝</strong> {{ $quote->notes }}</span>
+            @endif
         </div>
 
+        {{-- Articles --}}
         @if($quote->items->count())
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th class="center" style="width:50px;">Qté</th>
-                    <th class="right" style="width:120px;">Prix unitaire</th>
-                    <th class="right" style="width:120px;">Total HT</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($quote->items as $item)
-                <tr>
-                    <td>
-                        {{ $item->product->name }}
-                        <span class="product-ref">({{ $item->product->reference }})</span>
-                    </td>
-                    <td class="qty-cell">{{ $item->quantity }}</td>
-                    <td class="price-cell">{{ number_format($item->unit_price, 0, ',', ' ') }} FCFA</td>
-                    <td class="total-cell">{{ number_format($item->total, 0, ',', ' ') }} FCFA</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @endif
+        <div class="table-wrap">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width:45%;">Désignation</th>
+                        <th class="center" style="width:12%;">Qté</th>
+                        <th class="right" style="width:20%;">P.U HT</th>
+                        <th class="right" style="width:23%;">P.T HT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($quote->items as $item)
+                    <tr>
+                        <td>
+                            <span class="product-name">{{ $item->product->name ?? $item->description ?? 'Produit' }}</span>
+                            @if(isset($item->product->reference))
+                                <span class="product-ref">({{ $item->product->reference }})</span>
+                            @endif
+                            @if($item->description && !$item->product)
+                                <span class="product-ref">(Service)</span>
+                            @endif
+                        </td>
+                        <td class="center">{{ $item->quantity }}</td>
+                        <td class="right">{{ number_format($item->unit_price, 0, ',', ' ') }}</td>
+                        <td class="right">{{ number_format($item->total, 0, ',', ' ') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-        <div class="totals-section">
-            <div class="totals-row">
-                <span class="t-label">Sous-total HT</span>
-                <span class="t-value">{{ number_format($quote->subtotal, 0, ',', ' ') }} FCFA</span>
+        {{-- Totaux (alignés à droite avec le PT HT) --}}
+        <div class="proforma-totals">
+            <div class="total-line">
+                <span class="label">Sous-total HT</span>
+                <span class="value">{{ number_format($quote->subtotal, 0, ',', ' ') }} FCFA</span>
             </div>
-            <div class="totals-row">
-                <span class="t-label">TVA (19,25%)</span>
-                <span class="t-value">{{ number_format($quote->tax, 0, ',', ' ') }} FCFA</span>
+            <div class="total-line">
+                <span class="label">TVA (19,25%)</span>
+                <span class="value">{{ number_format($quote->tax, 0, ',', ' ') }} FCFA</span>
             </div>
-            <div class="totals-row total-ttc">
-                <span class="t-label">Total TTC</span>
-                <span class="t-value">{{ number_format($quote->total, 0, ',', ' ') }} FCFA</span>
+            <div class="total-ttc-line">
+                <span class="label">Total TTC</span>
+                <span class="value">{{ number_format($quote->total, 0, ',', ' ') }} FCFA</span>
             </div>
         </div>
+        @else
+        <div style="padding: 12px 16px; color: #888; text-align: center; font-size: 10px;">
+            Aucun article dans cette Proforma
+        </div>
+        @endif
 
     </div>
     @empty
-    <div style="text-align:center; padding:60px 32px; color:#7a9185;">
-        <div style="font-size:30px; margin-bottom:10px;">📄</div>
-        <div style="font-size:10px; font-style:italic;">Aucun devis trouvé pour cette période.</div>
+    <div class="empty-state">
+        <span class="icon">📄</span>
+        <div class="title">Aucune Proforma trouvée</div>
+        <span class="sub">Aucune Proforma ne correspond aux filtres appliqués.</span>
     </div>
     @endforelse
 
-    <div class="footer clearfix">
-        <div class="footer-divider"></div>
-        <div class="footer-left">
-            <strong>JR Computer Sarl</strong> &nbsp;·&nbsp; Document confidentiel &nbsp;·&nbsp; Usage interne uniquement
+    {{-- ============================================================
+         PIED DE PAGE
+    ============================================================ --}}
+    <div class="footer">
+        <div class="footer-brand-row">
+            <div class="footer-logo">
+                @if($logoData)
+                    <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
+                @else
+                    <span class="fallback">JR</span>
+                @endif
+            </div>
+            <div class="footer-brand-text">
+                <div class="name">Ingénierie Informatique &amp; Télécommunications</div>
+                <div>BP 5226 Douala &nbsp;·&nbsp; Tél : 2 33 42 21 53 / 6 99 96 96 08</div>
+                <div>infos@jr-computer.net &nbsp;·&nbsp; www.jrcomputersarl.com</div>
+            </div>
         </div>
-        <div class="footer-right">ERP System · {{ now()->format('Y') }}</div>
+
+        <div class="footer-tagline">Une équipe d'ingénieurs expérimentés et qualifiés pour vous servir</div>
+
+        <div class="partners-row">
+            <img src="{{ asset('images/ubiquiti.jfif') }}" alt="Ubiquiti">
+            <img src="{{ asset('images/kaspersky.jfif') }}" alt="Kaspersky">
+            <img src="{{ asset('images/hikvision.png') }}" alt="Hikvision">
+            <img src="{{ asset('images/cisco.png') }}" alt="Cisco">
+            <img src="{{ asset('images/apc.png') }}" alt="APC">
+            <img src="{{ asset('images/idirect.jfif') }}" alt="iDirect">
+            <img src="{{ asset('images/dell.png') }}" alt="Dell">
+            <img src="{{ asset('images/hp.png') }}" alt="HP">
+            <img src="{{ asset('images/alhua.jfif') }}" alt="alhua">
+        </div>
+
+        <div class="footer-legal">Document généré par JRC-ERP System · Fait à Douala, le {{ now()->locale('fr')->translatedFormat('d F Y') }}</div>
     </div>
 
-    <div class="footer-bottom clearfix">
-        <div class="fb-left"><strong>JR Computer</strong> · Douala, Cameroun</div>
-        <div class="fb-right">Rapport généré automatiquement</div>
-    </div>
+</div>
 
 </body>
 </html>

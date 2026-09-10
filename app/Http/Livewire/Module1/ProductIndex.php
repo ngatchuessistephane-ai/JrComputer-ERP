@@ -14,6 +14,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
 use App\Models\Module2\Supplier;
 use App\Exports\ProductsPdfExport;
+use App\Models\Module3\InvoiceItem;
+use App\Models\Module2\PurchaseOrderItem;
 
 #[Layout('layouts.appProd')]
 class ProductIndex extends Component
@@ -129,6 +131,9 @@ class ProductIndex extends Component
                 'category' => $this->category,
                 'supplier' => $this->supplier,
             ]);
+
+            session()->flash('message', 'Produit modifié avec succès.');
+            $this->dispatch('scroll-to-top');
         } else {
             $this->rules['serial_number'] = 'nullable|string|unique:products,serial_number';
             $this->validate();
@@ -145,20 +150,48 @@ class ProductIndex extends Component
                 'category' => $this->category,
                 'supplier' => $this->supplier,
             ]);
+
+            session()->flash('message', 'Produit sauvegardé avec succès.');
+            $this->dispatch('scroll-to-top');
         }
         
         $this->resetInput();
         $this->showForm = false;
-        session()->flash('message', $this->productId ? 'Produit modifié avec succès.' : 'Produit sauvegardé avec succès.');
     }
 
     public function delete($id)
     {
         $product = Product::find($id);
-        if ($product) {
-            $product->delete();
-            session()->flash('message', 'Produit supprimé.');
+        if (!$product) {
+            session()->flash('error', 'Produit introuvable.');
+            $this->dispatch('scroll-to-top');
+            return;
         }
+
+        $invoiceItemsCount = InvoiceItem::where('product_id', $id)->count();
+        if ($invoiceItemsCount > 0) {
+            session()->flash('error', "Impossible de supprimer ce produit car il est utilisé dans {$invoiceItemsCount} facture(s).");
+            $this->dispatch('scroll-to-top');
+            return;
+        }
+
+        $purchaseOrderItemsCount = PurchaseOrderItem::where('product_id', $id)->count();
+        if ($purchaseOrderItemsCount > 0) {
+            session()->flash('error', "Impossible de supprimer ce produit car il est utilisé dans {$purchaseOrderItemsCount} bon(s) de commande.");
+            $this->dispatch('scroll-to-top');
+            return;
+        }
+
+        $stockMovementsCount = StockMovement::where('product_id', $id)->count();
+        if ($stockMovementsCount > 0) {
+            session()->flash('error', "Impossible de supprimer ce produit car il a {$stockMovementsCount} mouvement(s) de stock.");
+            $this->dispatch('scroll-to-top');
+            return;
+        }
+
+        $product->delete();
+        session()->flash('message', 'Produit supprimé avec succès.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function openAdjustStock($id)
@@ -180,6 +213,7 @@ class ProductIndex extends Component
         $product = Product::find($this->adjustQuantityProductId);
         if (!$product) {
             session()->flash('error', 'Produit introuvable.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -188,6 +222,7 @@ class ProductIndex extends Component
 
         if ($newQty < 0) {
             session()->flash('error', 'Le stock ne peut pas devenir négatif.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -204,12 +239,14 @@ class ProductIndex extends Component
 
         $this->adjustQuantityProductId = null;
         session()->flash('message', 'Stock ajusté avec succès.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function import()
     {
         if (!$this->importFile) {
             session()->flash('error', 'Aucun fichier sélectionné.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -220,34 +257,29 @@ class ProductIndex extends Component
         try {
             Excel::import(new ProductsImport, $this->importFile);
             session()->flash('message', 'Import terminé avec succès.');
+            $this->dispatch('scroll-to-top');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $errors = [];
             foreach ($e->failures() as $failure) {
                 $errors[] = "Ligne {$failure->row()} - {$failure->attribute()} : " . implode(', ', $failure->errors());
             }
             session()->flash('error', 'Erreur de validation dans le fichier : ' . implode('; ', $errors));
+            $this->dispatch('scroll-to-top');
         } catch (\Exception $e) {
             session()->flash('error', 'Erreur technique : ' . $e->getMessage());
+            $this->dispatch('scroll-to-top');
         }
 
         $this->importFile = null;
     }
 
-    /**
-     * Ouvre le modal des filtres pour l'export PDF
-     */
     public function openExportModal()
     {
         $this->dispatch('open-export-modal');
     }
 
-    /**
-     * Exporte les produits en PDF avec les filtres appliqués
-     * Utilisation de JavaScript pour le téléchargement
-     */
     public function exportPdf()
     {
-        // Construire l'URL avec les filtres
         $params = [];
         if ($this->filter_date_from) $params['date_from'] = $this->filter_date_from;
         if ($this->filter_date_to) $params['date_to'] = $this->filter_date_to;
@@ -260,16 +292,10 @@ class ProductIndex extends Component
         $query = http_build_query($params);
         $url = route('export.products.pdf') . ($query ? '?' . $query : '');
         
-        // Fermer le modal avant de lancer le téléchargement
         $this->dispatch('close-export-modal');
-        
-        // Envoyer l'URL au JavaScript pour téléchargement
         $this->dispatch('download-pdf', url: $url);
     }
 
-    /**
-     * Réinitialise tous les filtres
-     */
     public function resetFilters()
     {
         $this->filter_date_from = null;
@@ -282,11 +308,9 @@ class ProductIndex extends Component
         
         $this->dispatch('filters-reset');
         session()->flash('message', 'Filtres réinitialisés.');
+        $this->dispatch('scroll-to-top');
     }
 
-    /**
-     * Réinitialise le formulaire
-     */
     private function resetInput()
     {
         $this->productId = null;

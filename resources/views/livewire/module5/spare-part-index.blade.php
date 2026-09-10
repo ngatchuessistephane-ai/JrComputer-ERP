@@ -216,6 +216,32 @@
         .fw-semibold {
             font-weight: 600;
         }
+
+        /* ✅ STOCK BADGES */
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .stock-ok {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .stock-low {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .stock-out {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .stock-ok i { color: #065f46; }
+        .stock-low i { color: #d97706; }
+        .stock-out i { color: #dc2626; }
     </style>
 
     @if(session()->has('message'))
@@ -251,11 +277,27 @@
                         <td><span class="fw-semibold">{{ $p->part_number }}</span></td>
                         <td>{{ $p->name }}</td>
                         <td>{{ Str::limit($p->compatibility, 40) }}</td>
-                        <td class="{{ $p->quantity_in_stock <= $p->min_stock_alert ? 'text-danger fw-bold' : '' }}">{{ $p->quantity_in_stock }}</td>
+                        <td>
+                            @php
+                                $stockClass = 'stock-ok';
+                                $stockIcon = '';
+                                if ($p->quantity_in_stock <= 0) {
+                                    $stockClass = 'stock-out';
+                                    $stockIcon = '<i class="bi bi-exclamation-circle" title="Rupture de stock"></i>';
+                                } elseif ($p->quantity_in_stock <= $p->min_stock_alert) {
+                                    $stockClass = 'stock-low';
+                                    $stockIcon = '<i class="bi bi-exclamation-triangle" title="Stock bas"></i>';
+                                }
+                            @endphp
+                            <span class="stock-badge {{ $stockClass }}">
+                                {{ $p->quantity_in_stock }}
+                                {!! $stockIcon !!}
+                            </span>
+                        </td>
                         <td>{{ number_format($p->selling_price, 0, ',', ' ') }} FCFA</td>
                         <td>
                             <button wire:click="edit({{ $p->id }})" class="act-btn edit" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button wire:click="delete({{ $p->id }})" onclick="return confirm('Supprimer cette pièce ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                            <button wire:click="delete({{ $p->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer cette pièce ?" class="act-btn del"><i class="bi bi-trash3"></i></button>
                         </td>
                     </tr>
                     @empty
@@ -296,4 +338,11 @@
             </div>
         </div>
     @endif
+    <script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
 </div>

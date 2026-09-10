@@ -75,7 +75,8 @@ class QuoteIndex extends Component
         $quote = Quote::find($id);
         if ($quote) {
             $quote->delete();
-            session()->flash('message', 'Devis supprimé.');
+            session()->flash('message', 'Proforma supprimé.');
+            $this->dispatch('scroll-to-top');
         }
     }
 
@@ -83,7 +84,8 @@ class QuoteIndex extends Component
     {
         $quote = Quote::with('items.product')->findOrFail($id);
         if ($quote->status === 'converted') {
-            session()->flash('error', 'Ce devis a déjà été converti.');
+            session()->flash('error', 'Ce Proforma a déjà été converti.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -119,7 +121,8 @@ class QuoteIndex extends Component
         $quote->status = 'converted';
         $quote->save();
 
-        session()->flash('message', 'Devis converti en facture #' . $invoice->reference);
+        session()->flash('message', 'Proforma converti en facture #' . $invoice->reference);
+        $this->dispatch('scroll-to-top');
         return redirect()->route('module3.invoices.index');
     }
 

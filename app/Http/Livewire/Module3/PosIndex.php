@@ -31,10 +31,12 @@ class PosIndex extends Component
         $product = Product::find($productId);
         if (!$product) {
             session()->flash('error', 'Produit introuvable.');
+            $this->dispatch('scroll-to-top');
             return;
         }
         if ($product->quantity <= 0) {
             session()->flash('error', "Le produit {$product->name} n'est plus en stock.");
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -80,6 +82,7 @@ class PosIndex extends Component
     {
         $this->cart = [];
         session()->flash('message', 'Panier vidé.');
+        $this->dispatch('scroll-to-top');
     }
 
     // Accesseurs pour les totaux
@@ -105,6 +108,7 @@ class PosIndex extends Component
 
         if (empty($this->cart)) {
             session()->flash('error', 'Le panier est vide.');
+            $this->dispatch('scroll-to-top');
             return;
         }
 
@@ -114,6 +118,7 @@ class PosIndex extends Component
             if (!$product || $product->quantity < $item['quantity']) {
                 $available = $product ? $product->quantity : 0;
                 session()->flash('error', "Stock insuffisant pour {$item['name']} (demandé: {$item['quantity']}, disponible: {$available})");
+                $this->dispatch('scroll-to-top');
                 return;
             }
         }
@@ -170,6 +175,7 @@ class PosIndex extends Component
         });
 
         session()->flash('message', 'Vente enregistrée avec succès.');
+        $this->dispatch('scroll-to-top');
         $this->reset(['cart', 'customer_id']);
         $this->payment_method = 'cash';
         $this->dispatch('saleCompleted');

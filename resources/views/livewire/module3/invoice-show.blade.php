@@ -1,6 +1,6 @@
-<div style="zoom:0.90;">
+<div style="zoom:0.90; max-width: 1100px; margin: 0 auto;">
     <style>
-        /* Styles écran (interaction) */
+        /* ─── TOOLBAR (écran uniquement) ─── */
         .module-toolbar {
             display: flex;
             align-items: center;
@@ -55,304 +55,311 @@
         }
         .btn-accent {
             background: linear-gradient(135deg, var(--brand-green), #22a352);
+            box-shadow: 0 4px 12px rgba(26,122,60,0.3);
             color: white;
             border: none;
         }
-        .btn-accent:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(26,122,60,0.3);
-        }
+        .btn-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(26,122,60,0.38); }
+        .btn-accent.orange { background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-light)); box-shadow: 0 4px 12px rgba(240,125,0,0.3); }
+        .btn-accent.orange:hover { box-shadow: 0 6px 18px rgba(240,125,0,0.38); }
+
+        /* ─── DOCUMENT (réplique du papier en-tête JR Computer) ─── */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap');
+
         .invoice-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            background: #ffffff;
+            color: #1a1a1a;
+            box-shadow: var(--shadow-card);
+            border-radius: 6px;
             overflow: hidden;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
-        .invoice-header {
-            background: linear-gradient(135deg, #0d1f14 0%, #1a3a28 100%);
-            padding: 24px 32px;
-            color: white;
+
+        /* ─── EN-TÊTE / LETTERHEAD ─── */
+        .invoice-letterhead {
+            padding: 28px 60px 14px;
+            border-bottom: 1px solid #ccc;
         }
-        .invoice-header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .logo-area {
+        .letterhead-row {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
         }
-        .logo-img {
-            height: 55px;
-            width: auto;
+        .letterhead-logo {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bbb;
+            overflow: hidden;
         }
-        .company-details h1 {
-            font-size: 20px;
-            font-weight: 800;
-            margin: 0;
-            font-family: 'Syne', sans-serif;
-        }
-        .company-details p {
-            font-size: 10px;
-            opacity: 0.8;
-            margin: 5px 0 0;
-        }
-        .invoice-info {
-            text-align: right;
-        }
-        .invoice-info .doc-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 0;
-        }
-        .invoice-info .ref {
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 5px;
-        }
-        .invoice-meta {
-            background: #f8fafc;
-            padding: 20px 32px;
-            border-bottom: 1px solid #e2ece6;
-        }
-        .meta-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .meta-item {
-            font-size: 12px;
-        }
-        .meta-label {
-            font-weight: 600;
-            color: #5a6b61;
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .meta-value {
+        .letterhead-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .letterhead-logo .fallback { font-size: 24px; font-weight: 900; color: #2f6b3f; font-family: 'Dancing Script', cursive; }
+        .letterhead-text { flex: 1; text-align: center; }
+        .letterhead-text .brand-tagline {
+            font-family: 'Dancing Script', cursive;
+            font-size: 27px;
             font-weight: 700;
-            color: #0f1f12;
+            color: #8a8a8a;
+            letter-spacing: 0.3px;
+        }
+        .letterhead-text .brand-meta {
+            font-size: 9.5px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .letterhead-text .brand-meta strong { color: #444; font-weight: 600; }
+        .letterhead-sub {
+            font-family: 'Dancing Script', cursive;
+            font-size: 13px;
+            color: #9a9a9a;
+            margin-top: -4px;
+            margin-left: 4px;
+        }
+
+        /* ─── ZONE DATE / DESTINATAIRE / TITRE ─── */
+        .invoice-meta-zone { padding: 18px 60px 0; }
+        .meta-date { text-align: right; font-size: 13px; color: #222; margin-bottom: 14px; }
+        .meta-recipient { text-align: right; font-size: 14px; color: #111; margin-bottom: 22px; }
+        .meta-recipient .name { font-weight: 800; text-transform: uppercase; }
+        .meta-recipient .line { font-weight: 700; text-transform: uppercase; }
+        .meta-recipient .small { font-weight: 500; text-transform: none; font-size: 12px; color: #555; }
+
+        .doc-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .doc-title {
+            display: inline-block;
+            background: #ececec;
+            padding: 6px 14px 6px 4px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            color: #111;
+            text-transform: uppercase;
         }
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 11px;
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 10px;
             font-weight: 700;
-        }
-        .status-badge.paid    { background: #d1fae5; color: #065f46; }
-        .status-badge.partial { background: #ffedd5; color: #9a3412; }
-        .status-badge.sent    { background: #dbeafe; color: #1e40af; }
-        .status-badge.draft   { background: #f1f5f9; color: #475569; }
-        .status-badge.overdue { background: #fee2e2; color: #991b1b; }
-        .status-badge.cancelled { background: #f1f5f9; color: #6b7280; }
-        .amount-positive { color: #1a7a3c; font-weight: 800; }
-        .amount-negative { color: #dc2626; font-weight: 800; }
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        .items-table th {
-            background: #f4f6f9;
-            padding: 12px 16px;
-            font-size: 11px;
             text-transform: uppercase;
-            color: #5a6b61;
-            border-bottom: 1px solid #e2ece6;
+            letter-spacing: 0.5px;
+            color: #fff;
+            flex-shrink: 0;
         }
-        .items-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e2ece6;
-            color: #0f1f12;
+        .status-badge.paid      { background: #10b981; }
+        .status-badge.partial   { background: #f59e0b; }
+        .status-badge.sent      { background: #3b82f6; }
+        .status-badge.draft     { background: #6b7280; }
+        .status-badge.overdue   { background: #ef4444; }
+        .status-badge.cancelled { background: #6b7280; }
+
+        /* ─── TABLEAU (encadré identique au papier) ─── */
+        .proforma-box {
+            margin: 0 60px 0;
+            border: 1.5px solid #222;
         }
-        .items-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .payment-section {
-            padding: 0 32px 20px 32px;
-        }
-        .payment-section h5 {
-            font-family: 'Syne', sans-serif;
-            font-size: 14px;
+        .items-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .items-table thead th {
+            border: 1px solid #222;
+            border-top: none;
+            padding: 8px 10px;
             font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--text-primary);
+            font-size: 13px;
+            text-align: left;
+            background: #fff;
+        }
+        .items-table thead th:first-child { border-left: none; }
+        .items-table thead th:last-child { border-right: none; }
+        .items-table thead th.text-center { text-align: center; }
+        .items-table thead th.text-end { text-align: right; }
+
+        .items-table tbody td {
+            border: 1px solid #222;
+            border-top: none;
+            border-bottom: none;
+            padding: 10px 12px;
+            vertical-align: top;
+            color: #111;
+        }
+        .items-table tbody td:first-child { border-left: none; }
+        .items-table tbody td:last-child { border-right: none; }
+        .items-table tbody tr:last-child td { padding-bottom: 28px; }
+
+        .items-table .product-name { font-weight: 700; text-decoration: underline; text-transform: uppercase; font-size: 13px; }
+        .items-table .product-ref { font-size: 12px; text-decoration: underline; margin-top: 4px; }
+        .items-table .service-tag { font-size: 10px; font-weight: 600; color: #555; font-style: italic; }
+        .items-table .text-center { text-align: center; }
+        .items-table .text-end { text-align: right; }
+        .items-table .empty-row td { color: #888; text-align: center; padding: 30px 12px; border-top: 1px solid #222; }
+
+        /* ─── TOTAUX (lignes intégrées au même encadré) ─── */
+        .totals-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .totals-table td {
+            border: 1px solid #222;
+            border-bottom: none;
+            padding: 6px 12px;
+            font-weight: 600;
+        }
+        .totals-table td:first-child { border-left: none; text-align: center; font-weight: 400; }
+        .totals-table td:last-child { border-right: none; text-align: right; width: 22%; }
+        .totals-table tr.ttc td { font-weight: 800; font-size: 14px; }
+        .totals-table tr.paid td { color: #1a7a3c; font-weight: 600; }
+
+        .amount-words-row {
+            border: 1px solid #222;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .amount-words-row strong { font-weight: 700; }
+
+        .remaining-row {
+            border: 1px solid #222;
+            border-top: none;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 800;
+            text-align: right;
+            color: #b45309;
+            background: #fff8ec;
+        }
+
+        /* ─── MENTIONS / CONDITIONS ─── */
+        .conditions-block {
+            padding: 14px 60px 0;
+            font-size: 12.5px;
+            color: #111;
+            line-height: 1.85;
+        }
+        .conditions-block .cond-line { text-decoration: underline; }
+        .conditions-block .cond-strong { font-weight: 800; text-decoration: underline; }
+
+        /* ─── HISTORIQUE DES PAIEMENTS (UNIQUEMENT SI PAIEMENTS EXISTENT) ─── */
+        @if($invoice->payments->count() > 0)
+        .payment-section { padding: 18px 60px 4px; }
+        .payment-section h5 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #444;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
         }
         .payment-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--bg-page);
-            border-radius: 10px;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-        }
-        .payment-amount {
-            font-weight: 700;
-            font-size: 14px;
-            color: #1a7a3c;
-        }
-        .payment-details {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-        .payment-empty {
-            text-align: center;
-            padding: 20px;
-            background: var(--bg-page);
-            border-radius: 10px;
-            color: var(--text-muted);
+            background: #f7f7f7;
+            border-radius: 8px;
+            padding: 9px 14px;
+            margin-bottom: 6px;
+            border-left: 3px solid #1a7a3c;
             font-size: 12px;
         }
-        
-        .totals-box {
-            background: #f4f6f9;
-            border-radius: 16px;
-            padding: 20px 28px;
-            margin: 20px 32px;
-            text-align: right;
-        }
-        .totals-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-        .totals-line .label {
-            color: #5a6b61;
-            font-weight: 500;
-        }
-        .totals-line .value {
-            font-weight: 600;
-            color: #0f1f12;
-        }
-        .totals-line.total {
-            font-size: 16px;
-            font-weight: 800;
-            color: #1a7a3c;
-            border-top: 1px solid #e2ece6;
-            padding-top: 12px;
-            margin-top: 8px;
-        }
-        .totals-line.total .value {
-            color: #1a7a3c;
-            font-size: 18px;
-        }
-        .totals-line.remaining {
-            background: #fff8f0;
-            padding: 10px 16px;
-            border-radius: 12px;
-            margin-top: 12px;
-        }
-        .totals-line.remaining .label {
-            color: #f07d00;
-            font-weight: 700;
-        }
-        .totals-line.remaining .value {
-            color: #f07d00;
-            font-weight: 800;
-        }
-        .totals-line.paid-full {
-            background: #d1fae5;
-            padding: 10px 16px;
-            border-radius: 12px;
-            margin-top: 12px;
-        }
-        .totals-line.paid-full .label {
-            color: #065f46;
-            font-weight: 700;
-        }
-        .totals-line.paid-full .value {
-            color: #065f46;
-            font-weight: 800;
-        }
-        .invoice-footer {
-            background: #0d1f14;
-            color: #6b8c77;
-            padding: 14px 32px;
-            font-size: 9px;
-            text-align: center;
-        }
-        .payment-terms {
-            background: #f0fdf4;
-            border: 1px solid #d1fae5;
-            border-radius: 12px;
-            padding: 12px 20px;
-            margin: 0 32px 20px 32px;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .payment-terms span:first-child {
-            color: #065f46;
-            font-weight: 600;
-        }
-        
+        .payment-amount { font-weight: 700; font-size: 13px; color: #1a7a3c; }
+        .payment-details { font-size: 11px; color: #666; }
+        .payment-empty { text-align: center; padding: 14px; background: #f7f7f7; border-radius: 8px; color: #888; font-size: 12px; }
         .delete-payment-btn {
             background: transparent;
             border: 1px solid rgba(220,38,38,0.3);
             border-radius: 6px;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.15s;
             color: #dc2626;
         }
-        .delete-payment-btn:hover {
-            background: rgba(220,38,38,0.1);
-            border-color: #dc2626;
+        .delete-payment-btn:hover { background: rgba(220,38,38,0.1); border-color: #dc2626; }
+        @endif
+
+        /* ─── PIED DE PAGE ─── */
+        .invoice-footer {
+            margin-top: 22px;
+            border-top: 1px solid #ccc;
+            padding: 16px 60px 18px;
         }
-        
+        .footer-brand-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+        .footer-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid #bbb;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .footer-logo .fallback { font-size: 16px; font-weight: 900; color: #2f6b3f; font-family: 'Dancing Script', cursive; }
+        .footer-brand-text { font-size: 10px; line-height: 1.5; color: #333; text-align: center; }
+        .footer-brand-text .name { font-weight: 700; font-size: 11px; }
+        .footer-tagline {
+            text-align: center;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: 600;
+            color: var(--brand-orange, #f07d00);
+            margin: 12px 0 12px;
+        }
+        .partners-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 22px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        .partners-row img {
+            height: 24px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.85;
+            filter: grayscale(15%);
+            transition: opacity 0.3s ease;
+        }
+        .partners-row img:hover {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+        .footer-legal { text-align: center; font-size: 8px; color: #999; margin-top: 10px; }
+
+        /* ─── IMPRESSION ─── */
         @media print {
-            body {
-                background: white;
-                margin: 0;
-                padding: 0;
-            }
-            .module-toolbar, .btn-ghost, .btn-accent, .topbar, .sidebar, .flash-msg, .pagination-wrap, .filters-row, .search-wrap, .notif-wrap, .theme-toggle, .user-chip, .sidebar-overlay, .main-content .topbar, .main-content .topbar-actions, .delete-payment-btn {
-                display: none !important;
-            }
-            .page-area {
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .invoice-container {
-                box-shadow: none;
-                border-radius: 0;
-                margin: 0;
-            }
-            .invoice-header {
-                background: #0d1f14;
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-            .status-badge {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-            .totals-box, .payment-terms, .payment-item {
-                background: #f4f6f9;
-                print-color-adjust: exact;
-            }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; }
+            .module-toolbar, .btn-ghost, .btn-accent, .topbar, .sidebar, .flash-msg,
+            .pagination-wrap, .filters-row, .search-wrap, .notif-wrap, .theme-toggle,
+            .user-chip, .sidebar-overlay, .main-content .topbar, .main-content .topbar-actions,
+            .delete-payment-btn { display: none !important; }
+            .payment-section { display: block !important; }
+            .page-area { padding: 0 !important; margin: 0 !important; }
+            .invoice-container { box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; }
+            .status-badge, .remaining-row, .payment-item { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            .proforma-box, .totals-table td, .items-table thead th, .items-table tbody td { border-color: #222 !important; }
+            .letterhead-text .brand-tagline { color: #8a8a8a !important; }
+            .partners-row img { opacity: 1 !important; filter: none !important; }
         }
     </style>
 
+    {{-- TOOLBAR --}}
     <div class="module-toolbar">
         <h2><span class="module-icon"><i class="bi bi-receipt"></i></span> Détail de la facture</h2>
         <div>
@@ -361,191 +368,245 @@
         </div>
     </div>
 
+    {{-- DOCUMENT --}}
     <div class="invoice-container">
-        <div class="invoice-header">
-            <div class="invoice-header-inner">
-                <div class="logo-area">
+
+        {{-- ============================================================
+             EN-TÊTE / LETTERHEAD JR COMPUTER
+        ============================================================ --}}
+        <div class="invoice-letterhead">
+            <div class="letterhead-row">
+                <div class="letterhead-logo">
                     @php
                         $logoPath = public_path('images/logo-jr.jpg');
                         $logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : '';
                     @endphp
                     @if($logoData)
-                        <img src="data:image/jpeg;base64,{{ $logoData }}" class="logo-img" alt="JR Computer">
+                        <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
                     @else
-                        <div style="font-size:32px;font-weight:800;">JR</div>
+                        <span class="fallback">JR</span>
                     @endif
-                    <div class="company-details">
-                        <h1>JR Computer Sarl</h1>
-                        <p>Douala, Cameroun · RCCM: RC/DLA/2025/B123</p>
-                        <p>Tél: +237 690 000 000 · contact@jrcomputer.com</p>
+                </div>
+                <div class="letterhead-text">
+                    <div class="brand-tagline">Ingénierie Informatique &amp; Télécommunications</div>
+                    <div class="brand-meta">
+                        1390, Boulevard de la République, BP 5226 Douala &nbsp;/&nbsp; infos@jr-computer.net &nbsp;/&nbsp; www.jrcomputersarl.com<br>
+                        Régime : Réel &nbsp;-&nbsp; N° Cont : M020900027385T &nbsp;-&nbsp; R.C : 09/B.732 &nbsp;-&nbsp; CNPS : 351-0109022-N<br>
+                        Tél. : 2 33 42 21 53 / 6 99 96 96 08 / 6 99 00 38 38
                     </div>
                 </div>
-                <div class="invoice-info">
-                    <div class="doc-title">FACTURE</div>
-                    <div class="ref">N° {{ $invoice->reference }}</div>
-                </div>
+                {{-- élément vide pour équilibrer --}}
+                <div style="width:78px; flex-shrink:0;"></div>
             </div>
         </div>
 
-        <div class="invoice-meta">
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <div class="meta-label">Client</div>
-                    <div class="meta-value">{{ $invoice->customer?->name ?? 'Client inconnu/supprimé' }}</div>
-                    @if($invoice->customer?->phone)
-                        <div style="font-size: 10px; color: #6b8c77;">Tél: {{ $invoice->customer->phone }}</div>
-                    @endif
-                    @if($invoice->customer?->email)
-                        <div style="font-size: 10px; color: #6b8c77;">Email: {{ $invoice->customer->email }}</div>
-                    @endif
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Date d'émission</div>
-                    <div class="meta-value">{{ $invoice->date->format('d/m/Y') }}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Date d'échéance</div>
-                    <div class="meta-value">{{ $invoice->due_date->format('d/m/Y') }}</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Statut</div>
-                    @php
-                        $statusMap = [
-                            'paid' => ['paid','Payée','bi-check-circle-fill'],
-                            'partial' => ['partial','Partielle','bi-clock-history'],
-                            'sent' => ['sent','Envoyée','bi-send'],
-                            'draft' => ['draft','Brouillon','bi-file-earmark'],
-                            'overdue' => ['overdue','En retard','bi-exclamation-circle'],
-                            'cancelled' => ['cancelled','Annulée','bi-x-circle'],
-                        ];
-                        $s = $statusMap[$invoice->status] ?? ['draft','—','bi-circle'];
-                    @endphp
-                    <span class="status-badge {{ $s[0] }}"><i class="bi {{ $s[2] }}"></i> {{ $s[1] }}</span>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Reçu par</div>
-                    <div class="meta-value">
-                        @if($invoice->status === 'paid' && $invoice->payments->isNotEmpty())
-                            {{ $invoice->payments->last()->receiver->name ?? '—' }}
-                        @else
-                            —
-                        @endif
+        {{-- ============================================================
+             DATE / DESTINATAIRE / TITRE
+        ============================================================ --}}
+        <div class="invoice-meta-zone">
+            <div class="meta-date">Douala, le {{ $invoice->date->locale('fr')->translatedFormat('d F Y') }}</div>
+
+            <div class="meta-recipient">
+                <div class="name">{{ $invoice->customer?->name ?? 'Client inconnu/supprimé' }}</div>
+                @if($invoice->customer?->address)
+                    <div class="line">{{ $invoice->customer->address }}</div>
+                @endif
+                @if($invoice->customer?->phone || $invoice->customer?->email)
+                    <div class="small">
+                        @if($invoice->customer?->phone) Tél : {{ $invoice->customer->phone }} @endif
+                        @if($invoice->customer?->phone && $invoice->customer?->email) &nbsp;·&nbsp; @endif
+                        @if($invoice->customer?->email) {{ $invoice->customer->email }} @endif
                     </div>
+                @endif
+            </div>
+
+            <div class="doc-title-row">
+                <div class="doc-title">
+                    @if($invoice->status === 'draft')
+                        PROFORMA N°{{ $invoice->reference }}
+                    @else
+                        FACTURE N°{{ $invoice->reference }}
+                    @endif
                 </div>
+                <!-- @php
+                    $statusLabels = ['paid' => 'Payée', 'partial' => 'Partielle', 'sent' => 'Envoyée', 'draft' => 'Brouillon', 'overdue' => 'En retard', 'cancelled' => 'Annulée'];
+                    $s = $statusLabels[$invoice->status] ?? $invoice->status;
+                @endphp
+                <span class="status-badge {{ $invoice->status }}">{{ $s }}</span> -->
             </div>
         </div>
 
-        <div class="table-responsive px-3">
+        {{-- ============================================================
+             TABLEAU PROFORMA (encadré, identique au papier)
+        ============================================================ --}}
+        <div class="proforma-box">
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th>Désignation</th>
-                        <th class="text-center" style="width:80px;">Qté</th>
-                        <th class="text-end" style="width:140px;">Prix unitaire (FCFA)</th>
-                        <th class="text-end" style="width:140px;">Total HT (FCFA)</th>
+                        <th style="width:45%;">Désignation</th>
+                        <th class="text-center" style="width:12%;">Qté</th>
+                        <th class="text-end" style="width:20%;">P.U HT</th>
+                        <th class="text-end" style="width:23%;">P.T HT</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($invoice->items as $item)
+                    @forelse($invoice->items as $item)
                     <tr>
                         <td>
                             @if($item->product)
-                                <strong>{{ $item->product->name }}</strong>
-                                <br><span style="font-size: 10px; color: #6c757d;">Réf: {{ $item->product->reference }}</span>
+                                <div class="product-name">{{ $item->product->name }}</div>
+                                <div class="product-ref">Ref : {{ $item->product->reference }}</div>
                             @elseif($item->description)
-                                <strong>🛠️ {{ $item->description }}</strong>
-                                <br><span style="font-size: 10px; color: #f07d00;">Service / Prestation</span>
+                                <div class="product-name">{{ $item->description }}</div>
+                                <div class="service-tag">Service</div>
                             @else
-                                <strong>📦 Produit / Service</strong>
-                                <br><span style="font-size: 10px; color: #dc2626;">Information non disponible</span>
+                                <div class="product-name">Produit / Service</div>
                             @endif
                         </td>
                         <td class="text-center">{{ $item->quantity }}</td>
-                        <td class="text-end">{{ number_format($item->unit_price, 0, ',', ' ') }} FCFA</td>
-                        <td class="text-end">{{ number_format($item->total, 0, ',', ' ') }} FCFA</td>
+                        <td class="text-end">{{ number_format($item->unit_price, 0, ',', ' ') }}</td>
+                        <td class="text-end">{{ number_format($item->total, 0, ',', ' ') }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr class="empty-row">
+                        <td colspan="4">Aucun article dans cette facture</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
-        </div>
 
-        @php
-            $subtotal = $invoice->subtotal;
-            $tax = $invoice->tax;
-            $total = $invoice->total;
-            $paid = $invoice->paid_amount;
-            $remaining = $total - $paid;
-        @endphp
+            {{-- TOTAUX --}}
+            @php
+                $subtotal = $invoice->subtotal;
+                $tax = $invoice->tax;
+                $total = $invoice->total;
+                $paid = $invoice->paid_amount;
+                $remaining = $total - $paid;
+            @endphp
+            <table class="totals-table">
+                <tr>
+                    <td>Total HT</td>
+                    <td>{{ number_format($subtotal, 0, ',', ' ') }}</td>
+                </tr>
+                <tr>
+                    <td>TVA 19,25%</td>
+                    <td>{{ number_format($tax, 0, ',', ' ') }}</td>
+                </tr>
+                @if($paid > 0)
+                <tr class="paid">
+                    <td>Déjà réglé</td>
+                    <td>{{ number_format($paid, 0, ',', ' ') }}</td>
+                </tr>
+                @endif
+                <tr class="ttc">
+                    <td>TOTAL TTC</td>
+                    <td>{{ number_format($total, 0, ',', ' ') }}</td>
+                </tr>
+            </table>
 
-        <div class="totals-box">
-            <div class="totals-line">
-                <span class="label">Sous-total HT</span>
-                <span class="value">{{ number_format($subtotal, 0, ',', ' ') }} FCFA</span>
+            {{-- MONTANT EN LETTRES --}}
+            @if($total > 0)
+            <div class="amount-words-row">
+                La présente facture {{ $invoice->status === 'draft' ? 'proforma' : '' }} est arrêtée à la somme de :
+                <strong>{{ \App\Helpers\NumberToWords::convert($total) }} FCFA TTC</strong>.
             </div>
-            <div class="totals-line">
-                <span class="label">TVA (19,25%)</span>
-                <span class="value">{{ number_format($tax, 0, ',', ' ') }} FCFA</span>
-            </div>
-            <div class="totals-line">
-                <span class="label">Déjà réglé</span>
-                <span class="value">{{ number_format($paid, 0, ',', ' ') }} FCFA</span>
-            </div>
-            <div class="totals-line total">
-                <span class="label">Total TTC</span>
-                <span class="value">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
-            </div>
-            @if($remaining > 0)
-                <div class="totals-line remaining">
-                    <span class="label">Reste à payer</span>
-                    <span class="value">{{ number_format($remaining, 0, ',', ' ') }} FCFA</span>
-                </div>
+            @endif
+
+            {{-- RESTE À PAYER --}}
+            @if($remaining > 0 && $paid > 0)
+            <div class="remaining-row">Reste à payer : {{ number_format($remaining, 0, ',', ' ') }} FCFA</div>
             @endif
         </div>
 
+        {{-- ============================================================
+             division d'espace
+        ============================================================ --}}
+        <div class="conditions-block">
+            <div class="cond-line"><br></div>
+        </div>
+
+        {{-- ============================================================
+             HISTORIQUE DES PAIEMENTS (UNIQUEMENT SI DES PAIEMENTS EXISTENT)
+        ============================================================ --}}
+        @if($invoice->payments->count() > 0)
         <div class="payment-section">
             <h5><i class="bi bi-credit-card me-2"></i> Historique des paiements</h5>
-            @if($invoice->payments->count() > 0)
-                @foreach($invoice->payments as $payment)
-                <div class="payment-item">
-                    <div>
-                        <div class="payment-amount">{{ number_format($payment->amount, 0, ',', ' ') }} FCFA</div>
-                        <div class="payment-details">
-                            {{ $payment->payment_date->format('d/m/Y') }} - 
-                            @switch($payment->method)
-                                @case('cash') 💵 Espèces @break
-                                @case('mtn_momo') 📱 MTN MoMo @break
-                                @case('orange_money') 🟠 Orange Money @break
-                                @case('bank_transfer') 🏦 Virement bancaire @break
-                                @default {{ $payment->method }}
-                            @endswitch
-                        </div>
+            @foreach($invoice->payments as $payment)
+            <div class="payment-item">
+                <div>
+                    <div class="payment-amount">{{ number_format($payment->amount, 0, ',', ' ') }} FCFA</div>
+                    <div class="payment-details">
+                        {{ $payment->payment_date->format('d/m/Y') }} -
+                        @switch($payment->method)
+                            @case('cash') 💵 Espèces @break
+                            @case('mtn_momo') 📱 MTN MoMo @break
+                            @case('orange_money') 🟠 Orange Money @break
+                            @case('bank_transfer') 🏦 Virement bancaire @break
+                            @default {{ $payment->method }}
+                        @endswitch
                     </div>
-                    <button wire:click="deletePayment({{ $payment->id }})" 
-                            class="delete-payment-btn" 
-                            onclick="return confirm('Supprimer ce paiement ?')"
-                            title="Supprimer ce paiement">
-                        <i class="bi bi-trash3"></i>
-                    </button>
                 </div>
-                @endforeach
-            @else
-                <div class="payment-empty">
-                    <i class="bi bi-credit-card-2-front me-2"></i> Aucun paiement enregistré
-                </div>
-            @endif
+                <button wire:click="deletePayment({{ $payment->id }})"
+                        class="delete-payment-btn"
+                        onclick="return confirm('Supprimer ce paiement ?')"
+                        title="Supprimer ce paiement">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
+            @endforeach
+        </div>
+        @else
+        {{-- ============================================================
+             division d'espace
+        ============================================================ --}}
+        <div class="conditions-block">
+            <div class="cond-line"><br><br><br><br></div>
         </div>
 
-        @if($invoice->status !== 'paid' && $remaining > 0)
-            <div class="payment-terms">
-                <span><i class="bi bi-info-circle"></i> Conditions de paiement</span>
-                <span>À régler avant le {{ $invoice->due_date->format('d/m/Y') }}</span>
-                <span><i class="bi bi-credit-card"></i> Paiement accepté : espèces, MTN MoMo, Orange Money</span>
-            </div>
         @endif
 
+        {{-- ============================================================
+             PIED DE PAGE JR COMPUTER
+        ============================================================ --}}
         <div class="invoice-footer">
-            <div>JR Computer Sarl · BP:5226 · NIU: M123456789B</div>
-            <div style="margin-top: 4px;">Document généré par JRC-ERP System· Fait à Douala, le {{ now()->format('d/m/Y') }}</div>
+            <div class="footer-brand-row">
+                <div class="footer-logo">
+                    @if($logoData)
+                        <img src="data:image/jpeg;base64,{{ $logoData }}" alt="JR Computer">
+                    @else
+                        <span class="fallback">JR</span>
+                    @endif
+                </div>
+                <div class="footer-brand-text">
+                    <div class="name">Ingénierie Informatique &amp; Télécommunications</div>
+                    <div>BP 5226 Douala &nbsp;·&nbsp; Tél : 2 33 42 21 53 / 6 99 96 96 08</div>
+                    <div>infos@jr-computer.net &nbsp;·&nbsp; www.jrcomputersarl.com</div>
+                </div>
+            </div>
+
+            <div class="footer-tagline">Une équipe d'ingénieurs expérimentés et qualifiés pour vous servir</div>
+
+            {{-- Logos partenaires --}}
+            <div class="partners-row">
+                <img src="{{ asset('images/ubiquiti.jfif') }}" alt="Ubiquiti">
+                <img src="{{ asset('images/kaspersky.jfif') }}" alt="Kaspersky">
+                <img src="{{ asset('images/hikvision.png') }}" alt="Hikvision">
+                <img src="{{ asset('images/cisco.png') }}" alt="Cisco">
+                <img src="{{ asset('images/apc.png') }}" alt="APC">
+                <img src="{{ asset('images/idirect.jfif') }}" alt="iDirect">
+                <img src="{{ asset('images/dell.png') }}" alt="Dell">
+                <img src="{{ asset('images/hp.png') }}" alt="HP">
+                <img src="{{ asset('images/alhua.jfif') }}" alt="alhua">
+            </div>
+
+            <div class="footer-legal">Document généré par JRC-ERP System · Fait à Douala, le {{ now()->locale('fr')->translatedFormat('d F Y') }}</div>
         </div>
     </div>
+    <script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
 </div>

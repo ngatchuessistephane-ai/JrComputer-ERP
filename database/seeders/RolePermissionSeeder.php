@@ -11,9 +11,12 @@ class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
+        // Reset cache des permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // ========== MODULE 1 : Produits & Stock ==========
+        // ============================================================
+        // MODULE 1 : PRODUITS & STOCK
+        // ============================================================
         Permission::firstOrCreate(['name' => 'view products']);
         Permission::firstOrCreate(['name' => 'create products']);
         Permission::firstOrCreate(['name' => 'edit products']);
@@ -22,7 +25,9 @@ class RolePermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'import products']);
         Permission::firstOrCreate(['name' => 'export products']);
 
-        // ========== MODULE 2 : Achats & Fournisseurs ==========
+        // ============================================================
+        // MODULE 2 : ACHATS & FOURNISSEURS
+        // ============================================================
         Permission::firstOrCreate(['name' => 'view suppliers']);
         Permission::firstOrCreate(['name' => 'create suppliers']);
         Permission::firstOrCreate(['name' => 'edit suppliers']);
@@ -36,7 +41,9 @@ class RolePermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'delete purchase orders']);
         Permission::firstOrCreate(['name' => 'receive purchase orders']);
 
-        // ========== MODULE 3 : Ventes & POS ==========
+        // ============================================================
+        // MODULE 3 : VENTES & POS
+        // ============================================================
         Permission::firstOrCreate(['name' => 'view customers']);
         Permission::firstOrCreate(['name' => 'create customers']);
         Permission::firstOrCreate(['name' => 'edit customers']);
@@ -57,13 +64,9 @@ class RolePermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'record payments']);
         Permission::firstOrCreate(['name' => 'use pos']);
 
-        // ========== GESTION DES UTILISATEURS ==========
-Permission::firstOrCreate(['name' => 'view users']);
-Permission::firstOrCreate(['name' => 'create users']);
-Permission::firstOrCreate(['name' => 'edit users']);
-Permission::firstOrCreate(['name' => 'delete users']);
-
-        // ========== MODULE 5 : SAV ==========
+        // ============================================================
+        // MODULE 5 : SAV (SERVICES APRÈS-VENTE)
+        // ============================================================
         Permission::firstOrCreate(['name' => 'view sav tickets']);
         Permission::firstOrCreate(['name' => 'create sav tickets']);
         Permission::firstOrCreate(['name' => 'edit sav tickets']);
@@ -71,110 +74,172 @@ Permission::firstOrCreate(['name' => 'delete users']);
         Permission::firstOrCreate(['name' => 'close sav tickets']);
         Permission::firstOrCreate(['name' => 'use sav parts']);
 
-        // ========== MODULE 8 : Analytics ==========
+        // ============================================================
+        // ESPACE TECHNICIEN WEB (NOUVEAU)
+        // ============================================================
+        Permission::firstOrCreate(['name' => 'view own tickets']);
+        Permission::firstOrCreate(['name' => 'update own ticket status']);
+        Permission::firstOrCreate(['name' => 'close own tickets']);
+        Permission::firstOrCreate(['name' => 'view ticket details']);
+
+        // ============================================================
+        // MODULE 8 : ANALYTICS & BI
+        // ============================================================
         Permission::firstOrCreate(['name' => 'view analytics']);
         Permission::firstOrCreate(['name' => 'export reports']);
         Permission::firstOrCreate(['name' => 'manage settings']);
 
-        // ========== RÔLES ==========
-        // Admin (tous droits)
+        // ============================================================
+        // GESTION DES UTILISATEURS
+        // ============================================================
+        Permission::firstOrCreate(['name' => 'view users']);
+        Permission::firstOrCreate(['name' => 'create users']);
+        Permission::firstOrCreate(['name' => 'edit users']);
+        Permission::firstOrCreate(['name' => 'delete users']);
+
+        // ============================================================
+        // CRÉATION DES RÔLES
+        // ============================================================
+
+        // ---------- RÔLE ADMIN (Tous les droits) ----------
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $adminRole->givePermissionTo(Permission::all());
 
-        // ========== CONFIGURATION ==========
-
-        // Manager (droits étendus mais sans suppression ni configuration)
+        // ---------- RÔLE MANAGER (Droits étendus) ----------
         $managerRole = Role::firstOrCreate(['name' => 'manager']);
         $managerRole->syncPermissions([
-    // Produits & Stock
-    'view products',
-    'manage stock',
-    'import products',
-    'export products',
-    // Fournisseurs & Achats
-    'view suppliers',
-    'view purchase orders',
-    'create purchase orders',
-    'receive purchase orders',
-    // Clients
-    'view customers',
-    'create customers',
-    'edit customers',
-    // Devis
-    'view quotes',
-    'create quotes',
-    'edit quotes',
-    'convert quotes',
-    // Factures
-    'view invoices',
-    'create invoices',
-    'record payments',
-    // POS
-    'use pos',
-    // SAV (futur)
-    'view sav tickets',
-    'create sav tickets',
-    'edit sav tickets',
-    // Analytics
-    'view analytics',
-    'export reports',
-]);
-
-// Vendeur (droits commerciaux limités)
-$vendeurRole = Role::firstOrCreate(['name' => 'vendeur']);
-$vendeurRole->syncPermissions([
-    // Clients
-    'view customers',
-    'create customers',
-    'edit customers',
-    // Devis
-    'view quotes',
-    'create quotes',
-    'edit quotes',
-    'convert quotes',
-    // Factures
-    'view invoices',
-    'create invoices',
-    // POS
-    'use pos',
-    // Produits
-    'view products',
-]);
-
-        // (Optionnel) Rôle Technicien SAV – à décommenter quand le module SAV sera prêt
-       
-        $techRole = Role::firstOrCreate(['name' => 'technicien_sav']);
-        $techRole->syncPermissions([
+            // Produits & Stock
+            'view products',
+            'manage stock',
+            'import products',
+            'export products',
+            // Fournisseurs & Achats
+            'view suppliers',
+            'view purchase orders',
+            'create purchase orders',
+            'receive purchase orders',
+            // Clients
+            'view customers',
+            'create customers',
+            'edit customers',
+            // Devis
+            'view quotes',
+            'create quotes',
+            'edit quotes',
+            'convert quotes',
+            // Factures
+            'view invoices',
+            'create invoices',
+            'record payments',
+            // POS
+            'use pos',
+            // SAV
             'view sav tickets',
             'create sav tickets',
             'edit sav tickets',
-            'close sav tickets',
-            'use sav parts',
-            'view products',
-            'view customers',
+            // Analytics
+            'view analytics',
+            'export reports',
         ]);
 
-        // ========== UTILISATEURS PAR DÉFAUT ==========
-        // Admin
+        // ---------- RÔLE VENDEUR (Droits commerciaux limités) ----------
+        $vendeurRole = Role::firstOrCreate(['name' => 'vendeur']);
+        $vendeurRole->syncPermissions([
+            // Clients
+            'view customers',
+            'create customers',
+            'edit customers',
+            // Devis
+            'view quotes',
+            'create quotes',
+            'edit quotes',
+            'convert quotes',
+            // Factures
+            'view invoices',
+            'create invoices',
+            // POS
+            'use pos',
+            // Produits (consultation seulement)
+            'view products',
+        ]);
+
+        // ---------- RÔLE TECHNICIEN SAV (Droits d'intervention complet) ----------
+        $techRole = Role::firstOrCreate(['name' => 'technicien_sav']);
+        $techRole->syncPermissions([
+            // SAV général
+            'view sav tickets',
+            'close sav tickets',
+            'use sav parts',
+            
+            // Espace technicien web (atelier)
+            'view own tickets',
+            'update own ticket status',
+            'close own tickets',
+            'view ticket details',
+            
+            // Consultation (nécessaire pour les interventions)
+            'view products',
+            //'view customers',
+        ]);
+
+        // ============================================================
+        // CRÉATION DES UTILISATEURS PAR DÉFAUT
+        // ============================================================
+
+        // 1. Administrateur
         $admin = User::firstOrCreate(
             ['email' => 'admin@jrcomputer.com'],
-            ['name' => 'Admin Jr', 'password' => bcrypt('password')]
+            [
+                'name' => 'Admin Jr',
+                'password' => bcrypt('password')
+            ]
         );
         $admin->assignRole('admin');
 
-        // Manager (test)
+        // 2. Manager
         $manager = User::firstOrCreate(
             ['email' => 'manager@jrcomputer.com'],
-            ['name' => 'Manager Test', 'password' => bcrypt('manager123')]
+            [
+                'name' => 'Manager Jr',
+                'password' => bcrypt('manager123')
+            ]
         );
         $manager->assignRole('manager');
 
-        // Vendeur (test)
+        // 3. Vendeur
         $vendeur = User::firstOrCreate(
-           ['email' => 'vendeur@jrcomputer.com'],
-           ['name' => 'Vendeur Test', 'password' => bcrypt('vendeur123')]
+            ['email' => 'vendeur@jrcomputer.com'],
+            [
+                'name' => 'Vendeur Jr',
+                'password' => bcrypt('vendeur123')
+            ]
         );
         $vendeur->assignRole('vendeur');
 
+        // 4. Technicien SAV
+        $technicien = User::firstOrCreate(
+            ['email' => 'technicien@jrcomputer.com'],
+            [
+                'name' => 'Technicien SAV',
+                'password' => bcrypt('technicien123')
+            ]
+        );
+        $technicien->assignRole('technicien_sav');
+
+        // ============================================================
+        // MESSAGE DE CONFIRMATION
+        // ============================================================
+        $this->command->info('✅ Rôles et permissions créés avec succès !');
+        $this->command->info('📋 Utilisateurs créés :');
+        $this->command->info('   - admin@jrcomputer.com (password)');
+        $this->command->info('   - manager@jrcomputer.com (manager123)');
+        $this->command->info('   - vendeur@jrcomputer.com (vendeur123)');
+        $this->command->info('   - technicien@jrcomputer.com (technicien123)');
+        $this->command->info('');
+        $this->command->info('🔧 Permissions espace technicien web ajoutées :');
+        $this->command->info('   - view own tickets');
+        $this->command->info('   - update own ticket status');
+        $this->command->info('   - close own tickets');
+        $this->command->info('   - view ticket details');
     }
 }

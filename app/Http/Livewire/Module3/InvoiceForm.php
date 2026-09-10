@@ -194,4 +194,19 @@ class InvoiceForm extends Component
         $number = $last ? intval(substr($last->reference, -5)) + 1 : 1;
         return 'FAC-' . str_pad($number, 5, '0', STR_PAD_LEFT);
     }
+
+    /**
+ * Auto-remplissage du prix unitaire lors de la sélection d'un produit
+ */
+public function updatedSelectedProduct($value)
+{
+    if ($value) {
+        $product = \App\Models\Module1\Product::find($value);
+        if ($product) {
+            $this->unitPrice = $product->selling_price;
+        }
+    } else {
+        $this->unitPrice = null;
+    }
+}
 }

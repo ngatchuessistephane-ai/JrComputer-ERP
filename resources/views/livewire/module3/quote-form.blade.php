@@ -3,7 +3,7 @@
     .module-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
     .module-toolbar h2 { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 10px; }
     .module-icon { width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
-    .module-icon.indigo { background: linear-gradient(135deg, #6366f1, #4338ca); box-shadow: 0 4px 10px rgba(99,102,241,0.28); }
+    .module-icon.indigo { background: linear-gradient(135deg, var(--brand-green), #22a352); box-shadow: 0 4px 10px rgba(26,122,60,0.28); }
     .flash-msg { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 11px; font-size: 13px; font-weight: 500; margin-bottom: 16px; border: 1px solid; }
     .flash-msg.success { background: rgba(26,122,60,0.08); border-color: rgba(26,122,60,0.2); color: var(--brand-green); }
     .flash-msg.danger  { background: rgba(220,38,38,0.07); border-color: rgba(220,38,38,0.18); color: #dc2626; }
@@ -11,8 +11,8 @@
     .form-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; margin-bottom: 18px; }
     .form-section-header { display: flex; align-items: center; gap: 9px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
     .form-section-header .sec-icon { width: 28px; height: 28px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; color: white; }
-    .form-section-header .sec-icon.indigo { background: linear-gradient(135deg,#6366f1,#4338ca); }
-    .form-section-header .sec-icon.amber  { background: linear-gradient(135deg,#f59e0b,#d97706); }
+    .form-section-header .sec-icon.indigo { background: linear-gradient(135deg, var(--brand-green), #22a352); }
+    .form-section-header .sec-icon.amber  { background: linear-gradient(135deg, var(--brand-green), #22a352);  }
     .form-section-header .sec-icon.gray   { background: linear-gradient(135deg,#6b7280,#4b5563); }
     .form-section-header h6 { margin: 0; font-size: 13.5px; font-weight: 700; color: var(--text-primary); }
     .form-section-body { padding: 18px 20px; }
@@ -21,6 +21,7 @@
     .fg label { font-size: 11.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
     .fc { width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--bg-card); color: var(--text-primary); font-size: 13px; outline: none; transition: 0.18s; }
     .fc:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    .fc:disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-page); }
     .field-error { font-size: 11.5px; color: #dc2626; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
 
     .data-table { width: 100%; border-collapse: collapse; }
@@ -39,6 +40,18 @@
     .empty-items { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 13px; }
     .form-footer { display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; }
     .validity-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
+    /* ✅ Style pour l'auto-remplissage */
+    .auto-fill-badge {
+        display: inline-block;
+        background: rgba(26,122,60,0.1);
+        color: var(--brand-green);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 1px 8px;
+        border-radius: 4px;
+        margin-left: 4px;
+    }
 </style>
 
 @if(session()->has('message'))<div class="flash-msg success"><i class="bi bi-check-circle-fill"></i>{{ session('message') }}</div>@endif
@@ -46,11 +59,11 @@
 
 <div class="module-toolbar">
     <h2>
-        <span class="module-icon indigo"><i class="bi bi-file-text"></i></span>
-        {{ $quoteId ? 'Modifier le devis' : 'Nouveau devis' }}
+        <span class="module-icon indigo"><i class="bi bi-file-earmark-text"></i></span>
+        {{ $quoteId ? 'Modifier la Proforma' : 'Nouvelle Proforma' }}
     </h2>
     <a href="{{ route('module3.quotes.index') }}" class="btn-ghost" style="font-size:13px;">
-        <i class="bi bi-arrow-left me-1"></i> Retour aux devis
+        <i class="bi bi-arrow-left me-1"></i> Retour aux Proformas
     </a>
 </div>
 
@@ -77,7 +90,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="fg">
-                        <label>Date du devis <span style="color:#dc2626;">*</span></label>
+                        <label>Date de la Proforma <span style="color:#dc2626;">*</span></label>
                         <input type="date" wire:model="date" class="fc">
                         @error('date')<div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
                     </div>
@@ -94,10 +107,10 @@
                     <div class="fg">
                         <label>Statut</label>
                         <select wire:model="status" class="fc">
-                            <option value="draft">📄 Brouillon</option>
-                            <option value="sent">📤 Envoyé</option>
-                            <option value="approved">✅ Accepté</option>
-                            <option value="rejected">❌ Rejeté</option>
+                            <option value="draft"> Brouillon</option>
+                            <option value="sent"> Envoyé</option>
+                            <option value="approved"> Accepté</option>
+                            <option value="rejected"> Rejeté</option>
                         </select>
                         @error('status')<div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
                     </div>
@@ -109,7 +122,7 @@
     <div class="form-section">
         <div class="form-section-header">
             <span class="sec-icon amber"><i class="bi bi-box-seam"></i></span>
-            <h6>Articles du devis</h6>
+            <h6>Articles de la Proforma</h6>
             @if(count($items) > 0)
                 <span style="margin-left:auto;font-size:11px;color:var(--text-muted);">{{ count($items) }} article(s)</span>
             @endif
@@ -118,24 +131,27 @@
 
             <div class="add-item-bar">
                 <div class="fg" style="flex:2;min-width:180px;">
-                    <label>Produit</label>
-                    <select wire:model="selectedProduct" class="fc">
+                    <label>Produit <span style="color:#dc2626;">*</span></label>
+                    <select wire:model.live="selectedProduct" class="fc" id="productSelect">
                         <option value="">— Sélectionner un produit —</option>
                         @foreach($products as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }} · {{ number_format($p->selling_price,0,',',' ') }} FCFA</option>
+                            <option value="{{ $p->id }}" data-price="{{ $p->selling_price }}">
+                                {{ $p->name }} · {{ number_format($p->selling_price,0,',',' ') }} FCFA
+                            </option>
                         @endforeach
                     </select>
                     @error('selectedProduct')<div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>@enderror
                 </div>
-                <div class="fg" style="max-width:90px;">
-                    <label>Quantité</label>
-                    <input type="number" min="1" wire:model="quantityOrdered" class="fc" placeholder="1">
-                    @error('quantityOrdered')<div class="field-error">{{ $message }}</div>@enderror
-                </div>
                 <div class="fg" style="max-width:150px;">
-                    <label>Prix unitaire (FCFA)</label>
-                    <input type="number" step="0.01" wire:model="unitPrice" class="fc" placeholder="0">
+                    <label>Prix unitaire (FCFA) <span style="color:#dc2626;">*</span></label>
+                    <input type="number" step="0.01" wire:model="unitPrice" class="fc" placeholder="0" id="unitPriceInput">
                     @error('unitPrice')<div class="field-error">{{ $message }}</div>@enderror
+                    <small class="auto-fill-badge" id="autoFillBadge" style="display:none;">⏺ Auto-rempli</small>
+                </div>
+                <div class="fg" style="max-width:90px;">
+                    <label>Quantité <span style="color:#dc2626;">*</span></label>
+                    <input type="number" min="1" wire:model="quantityOrdered" class="fc" placeholder="0" value="1">
+                    @error('quantityOrdered')<div class="field-error">{{ $message }}</div>@enderror
                 </div>
                 <div style="padding-bottom:1px;">
                     <button type="button" wire:click="addItem" class="btn-brand" style="white-space:nowrap;">
@@ -204,7 +220,7 @@
         </div>
         <div class="form-section-body">
             <div class="fg" style="margin-bottom:0;">
-                <textarea wire:model="notes" rows="3" class="fc" placeholder="Conditions de paiement, délais de livraison, observations particulières…"></textarea>
+                <textarea wire:model="notes" rows="3" class="fc" placeholder="Conditions de paiement, délais de livraison, validité de l'offre, équipements d'origine…"></textarea>
             </div>
         </div>
     </div>
@@ -213,9 +229,75 @@
         <a href="{{ route('module3.quotes.index') }}" class="btn-ghost">Annuler</a>
         <button type="submit" class="btn-brand">
             <i class="bi bi-{{ $quoteId ? 'floppy' : 'plus-circle' }} me-1"></i>
-            {{ $quoteId ? 'Mettre à jour' : 'Créer le devis' }}
+            {{ $quoteId ? 'Mettre à jour' : 'Créer la Proforma' }}
         </button>
     </div>
 
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productSelect = document.getElementById('productSelect');
+        const unitPriceInput = document.getElementById('unitPriceInput');
+        const autoFillBadge = document.getElementById('autoFillBadge');
+
+        if (productSelect && unitPriceInput) {
+            productSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    const price = selectedOption.getAttribute('data-price');
+                    if (price) {
+                        unitPriceInput.value = parseInt(price);
+                        // Déclencher l'événement input pour Livewire
+                        unitPriceInput.dispatchEvent(new Event('input'));
+                        if (autoFillBadge) {
+                            autoFillBadge.style.display = 'inline-block';
+                            setTimeout(() => {
+                                autoFillBadge.style.display = 'none';
+                            }, 3000);
+                        }
+                    }
+                } else {
+                    unitPriceInput.value = '';
+                    if (autoFillBadge) {
+                        autoFillBadge.style.display = 'none';
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+@push('scripts')
+<script>
+    // Écouter les événements Livewire pour rafraîchir le badge
+    document.addEventListener('livewire:update', function() {
+        const productSelect = document.getElementById('productSelect');
+        const unitPriceInput = document.getElementById('unitPriceInput');
+        const autoFillBadge = document.getElementById('autoFillBadge');
+        
+        if (productSelect && unitPriceInput && productSelect.value) {
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const price = selectedOption.getAttribute('data-price');
+                if (price && unitPriceInput.value == price) {
+                    if (autoFillBadge) {
+                        autoFillBadge.style.display = 'inline-block';
+                        setTimeout(() => {
+                            autoFillBadge.style.display = 'none';
+                        }, 2000);
+                    }
+                }
+            }
+        }
+    });
+</script>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
+@endpush
 </div>

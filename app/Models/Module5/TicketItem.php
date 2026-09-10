@@ -3,7 +3,8 @@
 namespace App\Models\Module5;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Module5\SavTicket; 
+use App\Models\Module5\SparePart;
 class TicketItem extends Model
 {
     protected $table = 'ticket_items';

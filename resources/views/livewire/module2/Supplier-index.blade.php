@@ -207,7 +207,8 @@
                         <button wire:click="edit({{ $s->id }})" class="act-btn edit"><i class="bi bi-pencil"></i></button>
                         @endcan
                         @can('delete suppliers')
-                        <button wire:click="delete({{ $s->id }})" onclick="return confirm('Supprimer ce fournisseur ?')" class="act-btn del"><i class="bi bi-trash3"></i></button>
+                        <button wire:click="delete({{ $s->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer ce fournisseur ?" class="act-btn del"><i class="bi bi-trash3"></i>
+</button>
                         @endcan
                         </div>
                     </td>
@@ -233,7 +234,7 @@
 <div class="modal show d-block modal-jr" tabindex="-1" style="background:rgba(0,0,0,0.55);">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:linear-gradient(135deg, var(--brand-orange) 0%, #e07200 100%);">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--brand-green), #22a352);">
                 <h5 class="modal-title">
                     <i class="bi bi-{{ $supplierId ? 'pencil-square' : 'plus-circle' }} me-2"></i>
                     {{ $supplierId ? 'Modifier le fournisseur' : 'Ajouter un fournisseur' }}
@@ -267,7 +268,7 @@
 <div class="modal fade modal-jr" id="importModal" tabindex="-1" wire:ignore.self>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:linear-gradient(135deg, var(--brand-orange) 0%, #e07200 100%);">
+            <div class="modal-header" style="background:linear-gradient(135deg, var(--brand-green) 0%, #2d9e5a 100%);">
                 <h5 class="modal-title"><i class="bi bi-file-earmark-excel me-2"></i>Importer des fournisseurs</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -276,7 +277,7 @@
                     <div class="import-drop-icon"><i class="bi bi-cloud-upload"></i></div>
                     <p>Sélectionnez votre fichier Excel ou CSV</p>
                     <input type="file" wire:model="importFile" class="fc" accept=".xlsx,.xls,.csv" style="max-width:260px;margin:0 auto;">
-                    <div wire:loading wire:target="importFile" style="font-size:11.5px;color:var(--brand-orange);margin-top:6px;"><i class="bi bi-arrow-repeat"></i> Chargement…</div>
+                    <div wire:loading wire:target="importFile" style="font-size:11.5px;color:var(--brand-green); margin-top:6px;"><i class="bi bi-arrow-repeat"></i> Chargement…</div>
                 </div>
                 <div style="background:var(--bg-page);border-radius:9px;padding:10px 13px;border:1px solid var(--border-color);">
                     <p style="font-size:11px;"><strong>Colonnes :</strong> nom · code · contact · email · telephone · adresse · num_tva · delai_paiement</p>
@@ -332,6 +333,13 @@
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
         }
+    });
+</script>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     });
 </script>
 </div>

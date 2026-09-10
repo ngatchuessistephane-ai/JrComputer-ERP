@@ -6,6 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Module5\SavTicket;
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.appProd')]
 class TicketIndex extends Component
@@ -45,5 +46,6 @@ class TicketIndex extends Component
         }
         SavTicket::find($id)?->delete();
         session()->flash('message', 'Ticket supprimé.');
+        $this->dispatch('scroll-to-top');
     }
 }

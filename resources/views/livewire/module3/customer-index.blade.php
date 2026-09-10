@@ -58,7 +58,9 @@
                     <th>Email</th>
                     <th>Téléphone</th>
                     <th>Adresse</th>
+                    @can('create customers')
                     <th>Actions</th>
+                     @endcan
                 </tr>
             </thead>
             <tbody>
@@ -73,7 +75,9 @@
                         <button wire:click="edit({{ $c->id }})" class="act-btn edit"><i class="bi bi-pencil"></i></button>
                         @endcan
                         @can('delete customers')
-                        <button wire:click="delete({{ $c->id }})" onclick="return confirm('Supprimer ce client ?')" class="act-btn del"><i class="bi bi-trash3"></i></button>
+                        <button wire:click="delete({{ $c->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer ce client ?" class="act-btn del">
+    <i class="bi bi-trash3"></i>
+</button>
                         @endcan
                     </td>
                 </tr>
@@ -118,4 +122,11 @@
     </div>
 </div>
 @endif
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
 </div>

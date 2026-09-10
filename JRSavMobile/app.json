@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "JR Computer SAV",
+    "slug": "jrcomputer-sav",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a7a3c"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jrcomputer.sav",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a7a3c"
+      },
+      "package": "com.jrcomputer.sav",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "L'application accède à vos photos pour télécharger des preuves",
+          "cameraPermission": "L'application utilise la caméra pour capturer des photos"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "L'application utilise la caméra pour capturer des photos des réparations"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "votre-project-id"
+      }
+    }
+  }
+}

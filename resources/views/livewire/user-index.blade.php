@@ -303,7 +303,8 @@
                                 @endcan
                                 @can('delete users')
                                     @if($user->id !== auth()->id())
-                                        <button wire:click="delete({{ $user->id }})" onclick="return confirm('Supprimer cet utilisateur ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                                        <button wire:click="delete({{ $user->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer cet utilisateur ?" class="act-btn del"><i class="bi bi-trash3"></i>
+</button>
                                     @endif
                                 @endcan
                             </td>
@@ -376,4 +377,11 @@
         </div>
     </div>
     @endif
+    <script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
 </div>

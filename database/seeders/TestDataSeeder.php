@@ -3,355 +3,144 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Module1\Product;
-use App\Models\Module2\Supplier;
-use App\Models\Module3\Customer;
-use App\Models\Module5\SparePart;
-use App\Models\Module1\StockMovement;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TestDataSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // ============================================================
-        // 1. UTILISATEURS DE TEST (si non existants)
-        // ============================================================
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@jrcomputer.com'],
-            ['name' => 'Admin Jr', 'password' => Hash::make('password')]
-        );
-        $admin->assignRole('admin');
+        $this->command->info('📦 Début de l\'insertion des données de test...');
 
-        $manager = User::firstOrCreate(
-            ['email' => 'manager@jrcomputer.com'],
-            ['name' => 'Manga Joseph', 'password' => Hash::make('manager123')]
-        );
-        $manager->assignRole('manager');
-
-        $vendeur = User::firstOrCreate(
-            ['email' => 'vendeur@jrcomputer.com'],
-            ['name' => 'Ngo Laure', 'password' => Hash::make('vendeur123')]
-        );
-        $vendeur->assignRole('vendeur');
-
-        $technicien = User::firstOrCreate(
-            ['email' => 'technicien@jrcomputer.com'],
-            ['name' => 'Atangana Paul', 'password' => Hash::make('technicien123')]
-        );
-        $technicien->assignRole('technicien_sav');
-
-        // ============================================================
-        // 2. FOURNISSEURS (Module 2)
-        // ============================================================
-        Supplier::insert([
-            [
-                'name' => 'Dell Cameroon SARL',
-                'code' => 'DELL-CMR',
-                'contact_person' => 'Mbarga Jean',
-                'email' => 'contact@dell-cm.com',
-                'phone' => '699123456',
-                'address' => 'Rue de l\'Aqua, Douala, Cameroun',
-                'tax_number' => 'CM123456789',
-                'payment_terms' => 30,
-                'total_purchased' => 0,
-                'total_paid' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'HP Cameroon',
-                'code' => 'HP-CMR',
-                'contact_person' => 'Mokam Suzy',
-                'email' => 'suzy.mokam@hp-cm.com',
-                'phone' => '677889900',
-                'address' => 'Boulevard de la République, Yaoundé',
-                'tax_number' => 'CM987654321',
-                'payment_terms' => 45,
-                'total_purchased' => 0,
-                'total_paid' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'DistriTech Africa',
-                'code' => 'DTA-CMR',
-                'contact_person' => 'Nkolo Franck',
-                'email' => 'franck@distritech.com',
-                'phone' => '690001122',
-                'address' => 'Carrefour Bessengue, Douala',
-                'tax_number' => 'CM456123789',
-                'payment_terms' => 60,
-                'total_purchased' => 0,
-                'total_paid' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Espace Micro',
-                'code' => 'EM-CMR',
-                'contact_person' => 'Tchoumi Armel',
-                'email' => 'armel@espacmicro.com',
-                'phone' => '695554433',
-                'address' => 'Rue de la Gare, Bafoussam',
-                'tax_number' => 'CM789123456',
-                'payment_terms' => 30,
-                'total_purchased' => 0,
-                'total_paid' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Toshiba Central Africa',
-                'code' => 'TOS-CMR',
-                'contact_person' => 'Mvondo Alice',
-                'email' => 'alice@toshiba-ca.com',
-                'phone' => '698877665',
-                'address' => 'Avenue Kennedy, Douala',
-                'tax_number' => 'CM321654987',
-                'payment_terms' => 30,
-                'total_purchased' => 0,
-                'total_paid' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // ============================================================
-        // 3. CLIENTS (Module 3)
-        // ============================================================
-        Customer::insert([
-            [
-                'name' => 'Etele Joseph',
-                'email' => 'joseph.etele@gmail.com',
-                'phone' => '699112233',
-                'address' => 'Quartier Makepe, Douala',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Mbarga Danielle',
-                'email' => 'danielle.mbarga@yahoo.fr',
-                'phone' => '655443322',
-                'address' => 'Carrefour Mvan, Yaoundé',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Tchoffo Rodrigue',
-                'email' => 'rodrigue.tchoffo@outlook.com',
-                'phone' => '690998877',
-                'address' => 'Rue de l\'Hôpital, Bafoussam',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Essomba Céline',
-                'email' => 'celine.essomba@yahoo.com',
-                'phone' => '677665544',
-                'address' => 'Quartier Nlongkak, Yaoundé',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Mouliom Fabrice',
-                'email' => 'fabrice.mouliom@gmail.com',
-                'phone' => '699445566',
-                'address' => 'Bali, Douala',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Nguea Jeannette',
-                'email' => 'jeannette.nguea@yahoo.fr',
-                'phone' => '698776655',
-                'address' => 'Rue Piere, Bertoua',
-                'tax_number' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // ============================================================
-        // 4. PRODUITS (Module 1)
-        // ============================================================
-        Product::insert([
-            [
-                'name' => 'Dell Latitude 3420',
-                'reference' => 'DELL-3420',
-                'serial_number' => 'SN-DELL-001',
-                'description' => 'Ordinateur portable, Intel Core i5, 8Go RAM, SSD 256Go',
-                'purchase_price' => 450000,
-                'selling_price' => 550000,
-                'quantity' => 12,
-                'alert_threshold' => 3,
-                'category' => 'Ordinateur portable',
-                'supplier' => 'Dell Cameroon SARL',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'HP Pavilion 15',
-                'reference' => 'HP-PAV15',
-                'serial_number' => 'SN-HP-002',
-                'description' => 'Ordinateur HP Pavilion, Ryzen 5, 16Go RAM, SSD 512Go',
-                'purchase_price' => 520000,
-                'selling_price' => 650000,
-                'quantity' => 8,
-                'alert_threshold' => 2,
-                'category' => 'Ordinateur portable',
-                'supplier' => 'HP Cameroon',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Souris Logitech MX Master 3',
-                'reference' => 'LOG-MX3',
-                'serial_number' => 'SN-LOG-003',
-                'description' => 'Souris sans fil haute précision',
-                'purchase_price' => 45000,
-                'selling_price' => 65000,
-                'quantity' => 25,
-                'alert_threshold' => 5,
-                'category' => 'Périphérique',
-                'supplier' => 'DistriTech Africa',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Clavier Mécanique TKL RGB',
-                'reference' => 'CLAV-TKL',
-                'serial_number' => 'SN-CLAV-004',
-                'description' => 'Clavier mécanique avec switchs bleus',
-                'purchase_price' => 35000,
-                'selling_price' => 55000,
-                'quantity' => 15,
-                'alert_threshold' => 4,
-                'category' => 'Périphérique',
-                'supplier' => 'DistriTech Africa',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Ecran Dell 24"',
-                'reference' => 'DELL-24',
-                'serial_number' => 'SN-DELL-005',
-                'description' => 'Moniteur Dell P2422H, Full HD, IPS',
-                'purchase_price' => 120000,
-                'selling_price' => 165000,
-                'quantity' => 10,
-                'alert_threshold' => 2,
-                'category' => 'Écran',
-                'supplier' => 'Dell Cameroon SARL',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Ecran HP 22"',
-                'reference' => 'HP-22',
-                'serial_number' => 'SN-HP-006',
-                'description' => 'Moniteur HP V22, Full HD',
-                'purchase_price' => 95000,
-                'selling_price' => 125000,
-                'quantity' => 6,
-                'alert_threshold' => 2,
-                'category' => 'Écran',
-                'supplier' => 'HP Cameroon',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // ============================================================
-        // 5. PIÈCES DÉTACHÉES SAV (Module 5)
-        // ============================================================
-        SparePart::insert([
-            [
-                'part_number' => 'Nappe-ECRAN-HP',
-                'name' => 'Nappe d\'écran HP 15.6"',
-                'compatibility' => 'HP Pavilion 15, HP 250 G7',
-                'purchase_price' => 8500,
-                'selling_price' => 12500,
-                'quantity_in_stock' => 20,
-                'min_stock_alert' => 5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'part_number' => 'VENTILATEUR-DELL',
-                'name' => 'Ventilateur Dell Latitude',
-                'compatibility' => 'Dell Latitude 3420, 3440, 3450',
-                'purchase_price' => 12500,
-                'selling_price' => 18500,
-                'quantity_in_stock' => 12,
-                'min_stock_alert' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'part_number' => 'BATTERIE-HP-41',
-                'name' => 'Batterie HP Pavilion 15',
-                'compatibility' => 'HP Pavilion 15, HP 15-BS',
-                'purchase_price' => 35000,
-                'selling_price' => 55000,
-                'quantity_in_stock' => 8,
-                'min_stock_alert' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'part_number' => 'CARTE-MERE-DELL',
-                'name' => 'Carte mère Dell Latitude 3420',
-                'compatibility' => 'Dell Latitude 3420 uniquement',
-                'purchase_price' => 125000,
-                'selling_price' => 185000,
-                'quantity_in_stock' => 3,
-                'min_stock_alert' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'part_number' => 'CLAPIER-US',
-                'name' => 'Clavier AZERTY HP Pavilion',
-                'compatibility' => 'HP Pavilion 15, HP 250 G7',
-                'purchase_price' => 15000,
-                'selling_price' => 25000,
-                'quantity_in_stock' => 15,
-                'min_stock_alert' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // ============================================================
-        // 6. MOUVEMENTS DE STOCK INITIAUX (Module 1)
-        // ============================================================
-        // On récupère les produits créés pour ajouter des historiques réalistes
-        $products = Product::all();
-        foreach ($products as $product) {
-            StockMovement::create([
-                'product_id' => $product->id,
-                'type' => 'in',
-                'quantity' => $product->quantity,
-                'reason' => 'Stock initial',
-                'user_id' => 1,
-                'created_at' => now()->subDays(rand(1, 30)),
-                'updated_at' => now(),
-            ]);
+        // Récupérer l'ID de l'admin (créé dans RolePermissionSeeder)
+        $adminId = DB::table('users')->where('email', 'admin@jrcomputer.com')->value('id');
+        if (!$adminId) {
+            $this->command->error('❌ Admin non trouvé. Exécutez d\'abord RolePermissionSeeder.');
+            return;
         }
+        $this->command->info('👤 Utilisateur admin ID: ' . $adminId);
 
-        $this->command->info(' Données de test insérées avec succès !');
+        // ============================================================
+        // FOURNISSEURS (5)
+        // ============================================================
+        $this->command->info('🏭 Insertion des fournisseurs...');
+        $suppliers = [
+            ['name' => 'Dell Cameroun', 'code' => 'DELL-CMR', 'contact_person' => 'Jean Mbarga', 'email' => 'contact@dell.cm', 'phone' => '699123456', 'address' => 'Douala - Akwa', 'tax_number' => 'CM123456789', 'payment_terms' => 30],
+            ['name' => 'HP Cameroun', 'code' => 'HP-CMR', 'contact_person' => 'Pauline Ngo', 'email' => 'commercial@hp.cm', 'phone' => '699234567', 'address' => 'Yaoundé - Mvan', 'tax_number' => 'CM987654321', 'payment_terms' => 45],
+            ['name' => 'Logitech', 'code' => 'LOG-CMR', 'contact_person' => 'François Tchoffo', 'email' => 'sales@logitech.cm', 'phone' => '699345678', 'address' => 'Douala - Bonanjo', 'tax_number' => 'CM456789123', 'payment_terms' => 30],
+            ['name' => 'Samsung Cameroun', 'code' => 'SAM-CMR', 'contact_person' => 'Marie Bela', 'email' => 'contact@samsung.cm', 'phone' => '699456789', 'address' => 'Yaoundé - Bastos', 'tax_number' => 'CM789123456', 'payment_terms' => 60],
+            ['name' => 'Intel Corporation', 'code' => 'INT-CMR', 'contact_person' => 'Peter Njiki', 'email' => 'africa@intel.com', 'phone' => '699567890', 'address' => 'Douala - Makepe', 'tax_number' => 'CM321654987', 'payment_terms' => 30],
+        ];
+        foreach ($suppliers as $s) {
+            DB::table('suppliers')->insert(array_merge($s, ['created_at' => now(), 'updated_at' => now()]));
+        }
+        $this->command->info('✅ 5 fournisseurs créés');
+
+        // ============================================================
+        // PRODUITS (8)
+        // ============================================================
+        $this->command->info('📦 Insertion des produits...');
+        $products = [
+            ['name' => 'Ordinateur Dell XPS 15', 'reference' => 'PC-DELL-001', 'serial_number' => 'XPS15-001', 'description' => 'Portable haut de gamme', 'purchase_price' => 850000, 'selling_price' => 1250000, 'quantity' => 15, 'alert_threshold' => 3, 'category' => 'Informatique', 'supplier' => 'Dell Cameroun'],
+            ['name' => 'Ordinateur HP EliteBook 840', 'reference' => 'PC-HP-002', 'serial_number' => 'ELITE-002', 'description' => 'Ultrabook professionnel', 'purchase_price' => 720000, 'selling_price' => 1050000, 'quantity' => 8, 'alert_threshold' => 3, 'category' => 'Informatique', 'supplier' => 'HP Cameroun'],
+            ['name' => 'Souris Logitech MX Master 3S', 'reference' => 'SOU-LOG-003', 'serial_number' => 'MX-003', 'description' => 'Souris sans fil', 'purchase_price' => 45000, 'selling_price' => 75000, 'quantity' => 50, 'alert_threshold' => 10, 'category' => 'Accessoires', 'supplier' => 'Logitech'],
+            ['name' => 'Clavier Mécanique RGB', 'reference' => 'CLA-MEC-004', 'serial_number' => 'MEC-004', 'description' => 'Clavier mécanique', 'purchase_price' => 25000, 'selling_price' => 45000, 'quantity' => 30, 'alert_threshold' => 5, 'category' => 'Accessoires', 'supplier' => 'Logitech'],
+            ['name' => 'Écran Samsung 27" Curve', 'reference' => 'ECR-SAM-005', 'serial_number' => 'S27-005', 'description' => 'Écran incurvé 144Hz', 'purchase_price' => 180000, 'selling_price' => 275000, 'quantity' => 12, 'alert_threshold' => 3, 'category' => 'Périphériques', 'supplier' => 'Samsung Cameroun'],
+            ['name' => 'SSD 1To NVMe', 'reference' => 'SSD-SAM-007', 'serial_number' => 'SSD-007', 'description' => 'Stockage ultra rapide', 'purchase_price' => 55000, 'selling_price' => 85000, 'quantity' => 20, 'alert_threshold' => 5, 'category' => 'Stockage', 'supplier' => 'Western Digital'],
+            ['name' => 'Webcam HD Logitech C920', 'reference' => 'WEB-LOG-008', 'serial_number' => 'CAM-008', 'description' => 'Webcam 1080p', 'purchase_price' => 25000, 'selling_price' => 45000, 'quantity' => 25, 'alert_threshold' => 5, 'category' => 'Périphériques', 'supplier' => 'Logitech'],
+            ['name' => 'Routeur Wi-Fi 6', 'reference' => 'ROU-TP-012', 'serial_number' => 'TP-012', 'description' => 'Routeur gigabit', 'purchase_price' => 45000, 'selling_price' => 75000, 'quantity' => 8, 'alert_threshold' => 2, 'category' => 'Réseau', 'supplier' => 'TP-Link'],
+        ];
+        foreach ($products as $p) {
+            DB::table('products')->insert(array_merge($p, ['created_at' => now(), 'updated_at' => now()]));
+        }
+        $this->command->info('✅ 8 produits créés');
+
+        // ============================================================
+        // CLIENTS (5)
+        // ============================================================
+        $this->command->info('👥 Insertion des clients...');
+        $customers = [
+            ['name' => 'Dupont SARL', 'email' => 'contact@dupont.com', 'phone' => '699123789', 'address' => 'Douala - Akwa', 'tax_number' => 'CM123456'],
+            ['name' => 'ETS Mbarga', 'email' => 'mbarga@ets.com', 'phone' => '699234890', 'address' => 'Yaoundé - Mvan', 'tax_number' => 'CM234567'],
+            ['name' => 'Université de Ngaoundéré', 'email' => 'info@univ-ndere.cm', 'phone' => '699345901', 'address' => 'Ngaoundéré - Campus', 'tax_number' => 'CM345678'],
+            ['name' => 'Mme FOTSO Alice', 'email' => 'alice.fotso@gmail.com', 'phone' => '699456012', 'address' => 'Douala - Makepe', 'tax_number' => null],
+            ['name' => 'STE NKOA SARL', 'email' => 'contact@nkoa.com', 'phone' => '699678234', 'address' => 'Yaoundé - Bastos', 'tax_number' => 'CM456789'],
+        ];
+        foreach ($customers as $c) {
+            DB::table('customers')->insert(array_merge($c, [
+                'total_purchased' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]));
+        }
+        $this->command->info('✅ 5 clients créés');
+
+        // ============================================================
+        // PIÈCES DÉTACHÉES (5)
+        // ============================================================
+        $this->command->info('🔩 Insertion des pièces détachées...');
+        $spareParts = [
+            ['part_number' => 'ECR-15-001', 'name' => 'Écran 15.6" FHD', 'quantity_in_stock' => 5, 'min_stock_alert' => 3, 'selling_price' => 185000],
+            ['part_number' => 'BAT-HP-002', 'name' => 'Batterie HP EliteBook 840', 'quantity_in_stock' => 3, 'min_stock_alert' => 2, 'selling_price' => 65000],
+            ['part_number' => 'RAM-8G-008', 'name' => 'Module RAM 8Go DDR4', 'quantity_in_stock' => 10, 'min_stock_alert' => 3, 'selling_price' => 25000],
+            ['part_number' => 'SSD-256-009', 'name' => 'SSD 256Go', 'quantity_in_stock' => 6, 'min_stock_alert' => 2, 'selling_price' => 35000],
+            ['part_number' => 'CHA-DEL-010', 'name' => 'Chargeur Dell 130W', 'quantity_in_stock' => 3, 'min_stock_alert' => 2, 'selling_price' => 55000],
+        ];
+        foreach ($spareParts as $sp) {
+            DB::table('spare_parts')->insert(array_merge($sp, ['created_at' => now(), 'updated_at' => now()]));
+        }
+        $this->command->info('✅ 5 pièces détachées créées');
+
+        // ============================================================
+        // BONS DE COMMANDE (3)
+        // ============================================================
+        $this->command->info('📄 Insertion des bons de commande...');
+        $purchaseOrders = [
+            ['reference' => 'BC-2025-001', 'supplier_id' => 1, 'order_date' => '2025-06-01', 'status' => 'received', 'notes' => 'Commande PC Dell', 'created_by' => $adminId],
+            ['reference' => 'BC-2025-002', 'supplier_id' => 3, 'order_date' => '2025-06-10', 'status' => 'sent', 'notes' => 'Commande souris', 'created_by' => $adminId],
+            ['reference' => 'BC-2025-003', 'supplier_id' => 4, 'order_date' => '2025-06-15', 'status' => 'draft', 'notes' => 'Commande écrans', 'created_by' => $adminId],
+        ];
+        foreach ($purchaseOrders as $po) {
+            DB::table('purchase_orders')->insert(array_merge($po, [
+                'expected_delivery_date' => Carbon::parse($po['order_date'])->addDays(7)->format('Y-m-d'),
+                'subtotal' => 0,
+                'discount' => 0,
+                'tax' => 0,
+                'total' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]));
+        }
+        $this->command->info('✅ 3 bons de commande créés');
+
+        // ============================================================
+        // MOUVEMENTS DE STOCK (2)
+        // ============================================================
+        $this->command->info('📊 Insertion des mouvements de stock...');
+        $stockMovements = [
+            ['product_id' => 1, 'type' => 'in', 'quantity' => 5, 'reason' => 'Réception BC-2025-001', 'user_id' => $adminId],
+            ['product_id' => 3, 'type' => 'in', 'quantity' => 10, 'reason' => 'Réception BC-2025-002', 'user_id' => $adminId],
+        ];
+        foreach ($stockMovements as $sm) {
+            DB::table('stock_movements')->insert(array_merge($sm, ['created_at' => now(), 'updated_at' => now()]));
+            DB::table('products')->where('id', $sm['product_id'])->increment('quantity', $sm['quantity']);
+        }
+        $this->command->info('✅ 2 mouvements de stock créés');
+
+        // ============================================================
+        // STATISTIQUES FINALES
+        // ============================================================
         $this->command->info('');
-        $this->command->info(' Comptes de test :');
-        $this->command->info('   Admin    : admin@jrcomputer.com / password');
-        $this->command->info('   Manager  : manager@jrcomputer.com / manager123');
-        $this->command->info('   Vendeur  : vendeur@jrcomputer.com / vendeur123');
-        $this->command->info('   Technicien SAV : technicien@jrcomputer.com / technicien123');
+        $this->command->info('═══════════════════════════════════════════════════════════');
+        $this->command->info('📊 RÉCAPITULATIF DES DONNÉES INSÉRÉES');
+        $this->command->info('═══════════════════════════════════════════════════════════');
+        $this->command->info('🏭 Fournisseurs      : ' . DB::table('suppliers')->count());
+        $this->command->info('📦 Produits          : ' . DB::table('products')->count());
+        $this->command->info('👥 Clients           : ' . DB::table('customers')->count());
+        $this->command->info('🔩 Pièces détachées  : ' . DB::table('spare_parts')->count());
+        $this->command->info('📄 Bons de commande  : ' . DB::table('purchase_orders')->count());
+        $this->command->info('📊 Mouvements stock  : ' . DB::table('stock_movements')->count());
+        $this->command->info('═══════════════════════════════════════════════════════════');
+        $this->command->info('✅ SEED TERMINÉ AVEC SUCCÈS !');
     }
 }

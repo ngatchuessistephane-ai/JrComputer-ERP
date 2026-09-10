@@ -80,12 +80,14 @@ class CustomerIndex extends Component
         $this->resetInput();
         $this->showForm = false;
         session()->flash('message', 'Client sauvegardé.');
+        $this->dispatch('scroll-to-top');
     }
 
     public function delete($id)
     {
         Customer::find($id)?->delete();
         session()->flash('message', 'Client supprimé.');
+        $this->dispatch('scroll-to-top');
     }
 
     private function resetInput()

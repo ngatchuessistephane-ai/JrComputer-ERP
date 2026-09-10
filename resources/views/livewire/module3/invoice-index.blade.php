@@ -16,14 +16,24 @@
     .data-table th { background: var(--bg-page); padding: 11px 16px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); }
     .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-primary); }
     .data-table .fw-semibold { font-size: 12px; font-weight: 600; }
-    .act-btn { width: 30px; height: 30px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); background: transparent; cursor: pointer; transition: 0.15s; }
+    
+    /* ✅ Boutons d'action */
+    .act-btn { 
+        width: 30px; height: 30px; border-radius: 7px; 
+        display: inline-flex; align-items: center; justify-content: center; 
+        border: 1px solid var(--border-color); background: transparent; 
+        cursor: pointer; transition: 0.15s; color: var(--text-secondary); 
+        text-decoration: none; 
+    }
     .act-btn.view:hover  { background: rgba(59,130,246,0.10); color: #3b82f6; }
     .act-btn.edit:hover  { background: var(--brand-orange-xlight); color: var(--brand-orange); }
     .act-btn.del:hover   { background: rgba(220,38,38,0.08); color: #dc2626; }
     .act-btn.paid:hover  { background: rgba(22,163,74,0.15); color: #16a34a; }
     .act-btn.pdf:hover   { background: rgba(239,68,68,0.10); color: #ef4444; }
+    
     .empty-state-row td { text-align: center; padding: 44px 20px; color: var(--text-muted); font-size: 12px; }
     .pagination-wrap { padding: 12px 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; }
+    
     .badge-status { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-status.paid    { background: rgba(22,163,74,0.12); color: #16a34a; }
     .badge-status.partial { background: rgba(179, 153, 124, 0.12); color: #f07d00; }
@@ -31,12 +41,15 @@
     .badge-status.draft   { background: rgba(107,114,128,0.10); color: #6b7280; }
     .badge-status.overdue { background: rgba(220,38,38,0.10); color: #dc2626; }
     .badge-status.cancelled { background: rgba(156,163,175,0.10); color: #6b7280; }
+    
     .filters-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .filter-select { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--bg-card); color: var(--text-primary); font-size: 12px; outline: none; }
+    
     .modal-jr .modal-content { background: var(--bg-card); border-radius: 18px; }
     .modal-jr .modal-header  { background:linear-gradient(135deg, #dc2626, #ef4444); border-bottom: none; padding: 18px 22px; }
     .modal-jr .modal-title   { color: #fff; font-size: 15px; font-weight: 700; }
     .modal-jr .btn-close     { filter: brightness(0) invert(1); }
+    
     .fg { margin-bottom: 14px; }
     .fg label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
     .fc { width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--bg-card); color: var(--text-primary); font-size: 13px; outline: none; }
@@ -117,33 +130,35 @@
                         <span class="badge-status {{ $s[0] }}"><i class="bi {{ $s[2] }}"></i>{{ $s[1] }}</span>
                     </td>
                     <td>
-    @if($inv->status === 'paid' && $inv->payments->isNotEmpty())
-        {{ $inv->payments->last()->receiver->name ?? '—' }}
-    @else
-        —
-    @endif
-</td>
-                    <td style="display:flex;gap:4px;">
-                       @can('view invoices')  
-                        <a href="{{ route('module3.invoices.show', $inv->id) }}" class="act-btn view" title="Voir"><i class="bi bi-eye"></i></a>
+                        @if($inv->status === 'paid' && $inv->payments->isNotEmpty())
+                            {{ $inv->payments->last()->receiver->name ?? '—' }}
+                        @else
+                            —
+                        @endif
+                    </td>
+                    <td style="display:flex;gap:4px;flex-wrap:wrap;">
+                        @can('view invoices')  
+                            <a href="{{ route('module3.invoices.show', $inv->id) }}" class="act-btn view" title="Voir"><i class="bi bi-eye"></i></a>
                         @endcan
                         @can('edit invoices')
-                        <a href="{{ route('module3.invoices.edit', $inv->id) }}" class="act-btn edit" title="Modifier"><i class="bi bi-pencil"></i></a>
+                            <a href="{{ route('module3.invoices.edit', $inv->id) }}" class="act-btn edit" title="Modifier"><i class="bi bi-pencil"></i></a>
                         @endcan
                         @can('record payments')
                             @if(in_array($inv->status, ['sent', 'partial', 'draft']))
-                                <button wire:click="markAsPaid({{ $inv->id }})" class="act-btn paid" title="Marquer comme payée" onclick="return confirm('Marquer cette facture comme payée ?')">
+                                <button wire:click="markAsPaid({{ $inv->id }})" wire:confirm="Marquer cette facture comme payée ?" class="act-btn paid" title="Marquer comme payée">
                                     <i class="bi bi-check-circle"></i>
                                 </button>
                             @endif
                         @endcan
                         @can('delete invoices')
-                        <button wire:click="delete({{ $inv->id }})" onclick="return confirm('Supprimer cette facture ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                            <button wire:click="delete({{ $inv->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer cette facture ?" class="act-btn del" title="Supprimer">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         @endcan
                     </td>
                 </tr>
                 @empty
-                <tr class="empty-state-row"><td colspan="7">Aucune facture trouvée. Créez votre première facture.<\/td><\/tr>
+                <tr class="empty-state-row"><td colspan="8">Aucune facture trouvée. Créez votre première facture.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -218,7 +233,6 @@
         if (exportModal) {
             exportModal.show();
         } else {
-            // Fallback : réinitialiser le modal
             const modalEl = document.getElementById('exportFiltersModal');
             if (modalEl && typeof bootstrap !== 'undefined') {
                 exportModal = new bootstrap.Modal(modalEl);
@@ -233,6 +247,13 @@
         if (modalEl && typeof bootstrap !== 'undefined' && !exportModal) {
             exportModal = new bootstrap.Modal(modalEl);
         }
+    });
+</script>
+<script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     });
 </script>
 </div>

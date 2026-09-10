@@ -129,7 +129,10 @@
         <div class="flash-msg">{{ session('message') }}</div>
     @endif
     <div class="profile-card">
-         <a href="{{ url()->previous() }}" class="btn-ghost" style="position:left"><i class="bi bi-arrow-left"></i> Retour</a>
+         <!-- Remplacer la ligne du bouton Retour par : -->
+<button onclick="window.history.back()" class="btn-ghost" style="margin-bottom:20px;">
+    <i class="bi bi-arrow-left"></i> Retour
+</button>
         <div class="avatar-container" style="float:clear">
             <div class="avatar-circle">
                 @if(Auth::user()->avatar)

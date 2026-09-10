@@ -130,7 +130,8 @@ class QuoteForm extends Component
             ]);
         }
 
-        session()->flash('message', 'Devis sauvegardé.');
+        session()->flash('message', 'Proforma sauvegardé.');
+        $this->dispatch('scroll-to-top');
         return redirect()->route('module3.quotes.index');
     }
 
@@ -140,4 +141,19 @@ class QuoteForm extends Component
         $number = $last ? intval(substr($last->reference, -5)) + 1 : 1;
         return 'DEV-'.str_pad($number, 5, '0', STR_PAD_LEFT);
     }
+
+    /**
+ *  Auto-remplissage du prix unitaire lors de la sélection d'un produit
+ */
+public function updatedSelectedProduct($value)
+{
+    if ($value) {
+        $product = \App\Models\Module1\Product::find($value);
+        if ($product) {
+            $this->unitPrice = $product->selling_price;
+        }
+    } else {
+        $this->unitPrice = null;
+    }
+}
 }

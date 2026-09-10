@@ -122,25 +122,67 @@
             font-size: 12px;
             color: var(--text-primary);
         }
+
+        /* ============================================================
+           BADGES STATUT — UNIFORMISÉS
+           ============================================================ */
         .badge-status {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 3px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
-            background: rgba(107,114,128,0.12);
-            color: #6b7280;
+            letter-spacing: 0.02em;
         }
-        .badge {
-            padding: 3px 8px;
+
+        /* Statuts SAV */
+        .badge-status.pending    { background: #fef3c7; color: #92400e; }
+        .badge-status.assigned   { background: #dbeafe; color: #1e40af; }
+        .badge-status.diagnosing { background: #fff4e6; color: #b45309; }
+        .badge-status.repairing  { background: #e0e7ff; color: #3730a3; }
+        .badge-status.completed  { background: #d1fae5; color: #065f46; }
+        .badge-status.restituted { background: #f3f4f6; color: #4b5563; }
+
+        /* Mode sombre */
+        [data-theme="dark"] .badge-status.pending    { background: rgba(251,191,36,0.18); color: #fcd34d; }
+        [data-theme="dark"] .badge-status.assigned   { background: rgba(59,130,246,0.18); color: #93c5fd; }
+        [data-theme="dark"] .badge-status.diagnosing { background: rgba(251,146,60,0.18); color: #fdba74; }
+        [data-theme="dark"] .badge-status.repairing  { background: rgba(99,102,241,0.18); color: #a5b4fc; }
+        [data-theme="dark"] .badge-status.completed  { background: rgba(16,185,129,0.18); color: #6ee7b7; }
+        [data-theme="dark"] .badge-status.restituted { background: rgba(107,114,128,0.18); color: #9ca3af; }
+
+        /* ============================================================
+           BADGES PRIORITÉ — UNIFORMISÉS
+           ============================================================ */
+        .badge-priority {
+            display: inline-block;
+            padding: 3px 12px;
             border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: white;
         }
-        .bg-info { background: rgba(8,145,178,0.12); color: #0891b2; }
-        .bg-warning { background: rgba(240,125,0,0.12); color: #f07d00; }
-        .bg-danger { background: rgba(220,38,38,0.12); color: #dc2626; }
-        .bg-dark { background: rgba(0,0,0,0.1); color: #1f2937; }
+
+        .badge-priority.low      { background: #6b7280; }
+        .badge-priority.medium   { background: #3b82f6; }
+        .badge-priority.high     { background: #f59e0b; }
+        .badge-priority.critical { background: #dc2626; animation: pulse-urgent 1.8s ease-in-out infinite; }
+
+        @keyframes pulse-urgent {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.75; transform: scale(1.02); }
+        }
+
+        /* Mode sombre - priorités */
+        [data-theme="dark"] .badge-priority.low      { background: #4b5563; }
+        [data-theme="dark"] .badge-priority.medium   { background: #2563eb; }
+        [data-theme="dark"] .badge-priority.high     { background: #d97706; }
+        [data-theme="dark"] .badge-priority.critical { background: #dc2626; }
+
+        /* ============================================================
+           ACTIONS
+           ============================================================ */
         .act-btn {
             width: 30px;
             height: 30px;
@@ -199,7 +241,9 @@
     <div class="module-toolbar">
         <h2><span class="module-icon green"><i class="bi bi-tools"></i></span> SAV - Tickets d'intervention</h2>
         <div class="toolbar-actions">
+            @can('create sav tickets')
             <a href="{{ route('module5.tickets.create') }}" class="btn-brand"><i class="bi bi-plus-lg"></i> Nouveau ticket</a>
+            @endcan
         </div>
     </div>
 
@@ -245,7 +289,7 @@
                     @forelse($tickets as $ticket)
                     <tr>
                         <td><span class="fw-semibold">{{ $ticket->ticket_number }}</span></td>
-                        <td>{{ $ticket->customer->name }}</td>
+                        <td>{{ $ticket->customer->name ?? '—' }}</td>
                         <td>{{ $ticket->product->name ?? $ticket->device_model ?? '—' }}</td>
                         <td>
                             @php
@@ -257,21 +301,43 @@
                                     'completed'=>'Terminé',
                                     'restituted'=>'Restitué'
                                 ];
+                                $statusClasses = [
+                                    'pending'=>'pending',
+                                    'assigned'=>'assigned',
+                                    'diagnosing'=>'diagnosing',
+                                    'repairing'=>'repairing',
+                                    'completed'=>'completed',
+                                    'restituted'=>'restituted'
+                                ];
                             @endphp
-                            <span class="badge-status">{{ $statusLabels[$ticket->status] ?? $ticket->status }}</span>
+                            <span class="badge-status {{ $statusClasses[$ticket->status] ?? '' }}">
+                                {{ $statusLabels[$ticket->status] ?? $ticket->status }}
+                            </span>
                         </td>
                         <td>
                             @php
-                                $priorityColors = ['low'=>'info','medium'=>'warning','high'=>'danger','critical'=>'dark'];
-                                $priorityNames = ['low'=>'Basse','medium'=>'Moyenne','high'=>'Haute','critical'=>'Critique'];
+                                $priorityClasses = [
+                                    'low'=>'low',
+                                    'medium'=>'medium',
+                                    'high'=>'high',
+                                    'critical'=>'critical'
+                                ];
+                                $priorityNames = [
+                                    'low'=>'Basse',
+                                    'medium'=>'Moyenne',
+                                    'high'=>'Haute',
+                                    'critical'=>'Critique'
+                                ];
                             @endphp
-                            <span class="badge {{ $priorityColors[$ticket->priority] ?? 'secondary' }}">{{ $priorityNames[$ticket->priority] ?? $ticket->priority }}</span>
+                            <span class="badge-priority {{ $priorityClasses[$ticket->priority] ?? 'low' }}">
+                                {{ $priorityNames[$ticket->priority] ?? $ticket->priority }}
+                            </span>
                         </td>
                         <td>{{ $ticket->technician->name ?? '—' }}</td>
                         <td>
                             <a href="{{ route('module5.tickets.show', $ticket->id) }}" class="act-btn view" title="Voir"><i class="bi bi-eye"></i></a>
                             @can('delete sav tickets')
-                                <button wire:click="delete({{ $ticket->id }})" onclick="return confirm('Supprimer ce ticket ?')" class="act-btn del" title="Supprimer"><i class="bi bi-trash3"></i></button>
+                                <button wire:click="delete({{ $ticket->id }})" wire:confirm="Êtes-vous sûr de vouloir supprimer ce ticket SAV ?" class="act-btn del"><i class="bi bi-trash3"></i></button>
                             @endcan
                         </td>
                     </tr>
@@ -279,10 +345,17 @@
                         <tr class="empty-state-row"><td colspan="7">Aucun ticket SAV trouvé. Créez votre premier ticket.</td></tr>
                     @endforelse
                 </tbody>
-            </tr>
+            </table>
         </div>
         @if($tickets->hasPages())
             <div class="pagination-wrap">{{ $tickets->links() }}</div>
         @endif
     </div>
+    <script>
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('scroll-to-top', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>
 </div>
